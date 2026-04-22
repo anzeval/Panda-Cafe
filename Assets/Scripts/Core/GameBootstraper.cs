@@ -1,9 +1,9 @@
 using UnityEngine;
-using PandaCafe.NPC;
-using PandaCafe.Interaction;
-using PandaCafe.Managers;
 using PandaCafe.AI;
 using PandaCafe.Input;
+using PandaCafe.Interaction;
+using PandaCafe.Managers;
+using PandaCafe.NPC;
 
 public class GameBootstraper : MonoBehaviour
 {
@@ -16,17 +16,22 @@ public class GameBootstraper : MonoBehaviour
     [SerializeField] HallManager hallManager;
 
     [SerializeField] GridManager gridManager;
-    [SerializeField] PathfindingManager pathfindingManager;
     [SerializeField] SpriteRenderer background;
 
     [SerializeField] NPCSpawner npcSpawner;
 
     [SerializeField] Waiter waiter;
 
+    private PathfindingManager pathfindingManager;
+
     void Awake()
     {
         gridManager.Init(background);
+
+        pathfindingManager = new PathfindingManager();
         pathfindingManager.Init(gridManager);
+
+        NPCMovement.Init(pathfindingManager);
         
         interactionManager.Init(inputHandler, hallManager);
         npcSpawner.Init(guestData, queueManager);

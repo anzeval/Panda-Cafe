@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8635368751151813052}
   - component: {fileID: -8912976770684091402}
   - component: {fileID: 2255097076761107059}
+  - component: {fileID: -6468736126911188393}
   m_Layer: 0
   m_Name: Guest
   m_TagString: Untagged
@@ -106,7 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfa1f89935d2f4323889b0caeeadc5fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.NPC.Guest
-  speed: 3
   spriteRenderer: {fileID: 1686078037058574961}
 --- !u!50 &-8912976770684091402
 Rigidbody2D:
@@ -172,3 +172,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0.09489782, y: -0.12634411}
   m_Size: {x: 2.385305, y: 3.621202}
   m_Direction: 0
+--- !u!114 &-6468736126911188393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569326773202911153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ad8883068d444f7ebf2ef834b14fc4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.AI.NPCMovement
+  speed: 5
+  stopDistance: 0.05

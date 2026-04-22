@@ -291,7 +291,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &342652680
 Transform:
   m_ObjectHideFlags: 0
@@ -660,7 +660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &768139076
 Transform:
   m_ObjectHideFlags: 0
@@ -1202,7 +1202,6 @@ MonoBehaviour:
   interactionManager: {fileID: 2081795845}
   hallManager: {fileID: 24295689}
   gridManager: {fileID: 373856200}
-  pathfindingManager: {fileID: 944611672}
   background: {fileID: 1201781867}
   npcSpawner: {fileID: 1760993096}
   waiter: {fileID: 364128970}
@@ -1634,7 +1633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5080272671832835253, guid: fd399167723de431888e7edc604f07aa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8542451868893584469, guid: fd399167723de431888e7edc604f07aa, type: 3}
       propertyPath: m_LocalPosition.x

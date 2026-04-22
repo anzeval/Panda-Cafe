@@ -1,7 +1,6 @@
 using UnityEngine;
 using PandaCafe.Interaction;
 using PandaCafe.NPC;
-using PandaCafe.AI;
 
 namespace PandaCafe.Managers
 {
@@ -18,26 +17,43 @@ namespace PandaCafe.Managers
 
         public void RequestWaiter(IInteractable component)
         {
-            if(component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point))
+            if (!CanInteract(InteractionActor.Waiter, component.Type))
             {
-                waiter.MoveTo(point); 
+                return;
+            }
+
+            if (component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point))
+            {
+                waiter.MoveTo(point);
             }
             
         }
 
         public void RequestGuest(IInteractable component, Guest guest)
         {
-            if(component.Type == InteractionType.Table)
+            if (!CanInteract(InteractionActor.Guest, component.Type))
             {
-                if(component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
-                {
-                    guest.SetState(GuestState.GoingToTable); 
-                    guest.MoveTo(point);
-
-                    queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);
-                    queueManager.ReorderQueue(); 
-                }
+                return;
             }
+
+            if (component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
+            {
+                guest.SetState(GuestState.GoingToTable);
+                guest.MoveTo(point);
+
+                queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);
+                queueManager.ReorderQueue();
+            }
+        }
+
+        private bool CanInteract(InteractionActor actor, InteractionType interactionType)
+        {
+            if (actor == InteractionActor.Guest)
+            {
+                return interactionType == InteractionType.Table;
+            }
+
+            return interactionType == InteractionType.Table || interactionType == InteractionType.Kitchen || interactionType == InteractionType.Trash;
         }
     }
 }

@@ -1,33 +1,44 @@
 using UnityEngine;
-using PandaCafe.Managers;
 using PandaCafe.Interaction;
+using PandaCafe.AI;
 
 namespace PandaCafe.NPC
 {
     public class Guest : MonoBehaviour, IInteractable
     {
-        [SerializeField] private float speed = 5f;
         [SerializeField] private SpriteRenderer spriteRenderer;
 
         // Number in the queue if =-1 => out of queue
         public int OrdinalQueueNumber {get; private set;}
-
-        private GuestState guestState;
         public InteractionType Type {get; private set;}
 
-        private Vector3 targetPos;
-        private bool isMoving = false;
+        private GuestState guestState;
+        private NPCMovement movement;
 
         private void Awake()
         {
             Type = InteractionType.Guest;
+
+            if (movement == null)
+            {
+                movement = GetComponent<NPCMovement>();
+
+                if (movement == null)
+                {
+                    movement = gameObject.AddComponent<NPCMovement>();
+                }
+            }
+
+            movement = GetComponent<NPCMovement>();
+            movement.destinationReached += OnDestinationReached;
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            if(!isMoving) return;
-
-            HandleMovement();
+            if (movement != null)
+            {
+                movement.destinationReached -= OnDestinationReached;
+            }
         }
 
         private void LateUpdate()
@@ -41,44 +52,35 @@ namespace PandaCafe.NPC
             return true;
         }
 
-        private void HandleMovement()
-        {
-            transform.position = Vector2.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-
-            if (Vector2.Distance(transform.position, targetPos) < 0.05f)
-            {
-                transform.position = targetPos;
-                isMoving = false;
-
-                if (guestState == GuestState.GoingToQueue)
-                {
-                    guestState = GuestState.WaitingInQueue; 
-                }
-                else if (guestState == GuestState.GoingToTable)
-                {
-                    guestState = GuestState.ReadingMenu; 
-                }
-                else if (guestState == GuestState.GoingToExit)
-                {
-                    guestState = GuestState.Quit; 
-                }
-            }
-        }
-
         public void SetState(GuestState guestState)
         {
-            this. guestState = guestState;
+            this.guestState = guestState;
         }
 
         public void MoveTo(Vector3 target) 
         {
-            targetPos = target;
-            isMoving = true;
+            movement.SetTarget(target);
         }
 
         public void SetOrdinalQueueNumber(int index)
         {
             OrdinalQueueNumber = index;
+        }
+
+        private void OnDestinationReached()
+        {
+            if (guestState == GuestState.GoingToQueue)
+            {
+                guestState = GuestState.WaitingInQueue;
+            }
+            else if (guestState == GuestState.GoingToTable)
+            {
+                guestState = GuestState.ReadingMenu;
+            }
+            else if (guestState == GuestState.GoingToExit)
+            {
+                guestState = GuestState.Quit;
+            }
         }
     }
 }

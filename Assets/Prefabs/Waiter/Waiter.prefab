@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4940155945839316128}
   - component: {fileID: 1099331946675281309}
   - component: {fileID: 630817284431670542}
+  - component: {fileID: -6930295982949787836}
   m_Layer: 0
   m_Name: Waiter
   m_TagString: Untagged
@@ -143,5 +144,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Waiter
   spriteRenderer: {fileID: 4940155945839316128}
-  layerMultiplier: 100
-  speed: 3
+--- !u!114 &-6930295982949787836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5080272671832835253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ad8883068d444f7ebf2ef834b14fc4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.AI.NPCMovement
+  speed: 5
+  stopDistance: 0.05

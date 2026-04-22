@@ -1,17 +1,26 @@
 using UnityEngine;
 using PandaCafe.Interaction;
 
-// public class Kitchen : MonoBehaviour, IInteractable
-// {
-//     public InteractionType Type {get; private set;}
+public class Kitchen : MonoBehaviour, IInteractable
+{
+    [SerializeField] private Transform waiterPosition;
 
-//     void Awake()
-//     {
-//         Type = InteractionType.Kitchen;
-//     }
+    public InteractionType Type { get; private set; }
 
-//     public Vector3 GetWorldPoint()
-//     {
-//         return transform.position;
-//     }
-// }
+    void Awake()
+    {
+        Type = InteractionType.Kitchen;
+    }
+
+    public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)
+    {
+        if (actor != InteractionActor.Waiter)
+        {
+            point = default;
+            return false;
+        }
+
+        point = waiterPosition != null ? waiterPosition.position : transform.position;
+        return true;
+    }
+}
