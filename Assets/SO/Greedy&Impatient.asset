@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25c2e648baab4081b217176c43b52dd, type: 3}
+  m_Name: Greedy&Impatient
+  m_EditorClassIdentifier: Assembly-CSharp::GuestSO
+  prefab: {fileID: 5598081834774433460, guid: d7fc6a2e41c7d45bd9de79d4d6eefca6, type: 3}
+  WaitTime: 6
+  MinTips: 0
+  MaxTips: 3
