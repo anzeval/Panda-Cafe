@@ -76,7 +76,10 @@ namespace PandaCafe.AI
 
                 foreach (Cell neighbor in neighbors)
                 {
-                    if(closedList.Contains(neighbor))
+                    if(closedList.Contains(neighbor) || neighbor.CellType == CellType.Unwalkable)
+                        continue;
+
+                    if (IsDiagonalMove(current, neighbor) && IsDiagonalBlocked(current, neighbor))
                         continue;
 
                     int gCost = current.GCost + Distance(current, neighbor);
@@ -143,6 +146,28 @@ namespace PandaCafe.AI
                 return 14;
 
             return 10; 
+        } 
+
+        private bool IsDiagonalMove(Cell current, Cell neighbor)
+        {
+            return Mathf.Abs(current.Row - neighbor.Row) == 1 && Mathf.Abs(current.Column - neighbor.Column) == 1;
+        }
+
+        private bool IsDiagonalBlocked(Cell current, Cell neighbor)
+        {
+            int horizontalColumn = neighbor.Column;
+            int horizontalRow = current.Row;
+
+            int verticalColumn = current.Column;
+            int verticalRow = neighbor.Row;
+
+            bool hasHorizontal = gridManager.TryGetCell(horizontalRow, horizontalColumn, out Cell horizontalCell);
+            bool hasVertical = gridManager.TryGetCell(verticalRow, verticalColumn, out Cell verticalCell);
+
+            if (!hasHorizontal || !hasVertical)
+                return true;
+
+            return horizontalCell.CellType == CellType.Unwalkable || verticalCell.CellType == CellType.Unwalkable;
         } 
     }
 }

@@ -33,6 +33,11 @@ namespace PandaCafe.Interaction
 
             if(go.TryGetComponent<Guest>(out Guest guest))
             {
+                if (guest.OrdinalQueueNumber < 0)
+                {
+                    return;
+                }
+                
                 selectedGuest = guest;
             } 
             else

@@ -84,8 +84,8 @@ namespace PandaCafe.AI
         // Converts grid coordinates to a world-space position
         private Vector3 GetWorldPosition(int row, int column)
         {
-            float x = gridMin.x + column * cellSize;
-            float y = gridMax.y - row * cellSize;
+            float x = gridMin.x + (column * cellSize) + (cellSize / 2f);
+            float y = gridMax.y - (row * cellSize) - (cellSize / 2f);
 
             return new Vector3(x, y, 0f);
         }
