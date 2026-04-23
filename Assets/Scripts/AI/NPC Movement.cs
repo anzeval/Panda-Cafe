@@ -54,8 +54,9 @@ namespace PandaCafe.AI
 
             if (pathfindingManager == null)
             {
-                waypoints.Enqueue(finalTarget);
-                isMoving = true;
+                Debug.LogWarning($"{name}: PathfindingManager is not initialized, movement request ignored.");
+                isMoving = false;
+
                 return;
             }
 
@@ -63,8 +64,9 @@ namespace PandaCafe.AI
 
             if (path == null || path.Count == 0)
             {
-                waypoints.Enqueue(finalTarget);
-                isMoving = true;
+                Debug.LogWarning($"{name}: No valid path found to target {finalTarget}.");
+                isMoving = false;
+
                 return;
             }
 
@@ -72,8 +74,6 @@ namespace PandaCafe.AI
             {
                 waypoints.Enqueue(path[i].WorldPosition);
             }
-
-            waypoints.Enqueue(finalTarget);
             isMoving = true;
         }
 

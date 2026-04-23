@@ -32,6 +32,9 @@ namespace PandaCafe.AI
             if(!gridManager.TryGetCell(startCellCoordinates.y, startCellCoordinates.x, out Cell startCell)) return null;
             if(!gridManager.TryGetCell(targetCellCoordinates.y, targetCellCoordinates.x, out Cell targetCell)) return null;
 
+            if (startCell.CellType == CellType.Unwalkable || targetCell.CellType == CellType.Unwalkable)
+                return null;
+
             return FindPath(startCell, targetCell);
         }
 

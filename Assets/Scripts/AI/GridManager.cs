@@ -50,6 +50,25 @@ namespace PandaCafe.AI
             cells = new Cell[gridHeight, gridWidth];
         }
 
+        void OnDrawGizmos()
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                for (int i = 0; i < gridWidth; i++)
+                {
+                    if(cells[y,i].CellType == CellType.Walkable)
+                    {
+                        Gizmos.color = Color.green;
+                    } 
+                    else
+                    {
+                        Gizmos.color = Color.red;
+                    }
+                    Gizmos.DrawWireCube(GetWorldPosition(y, i), new Vector3(cellSize, cellSize, 0));
+                }
+            }
+        }
+
         // Creates and initializes all cells in the grid
         private void InitializeGrid()
         {
@@ -95,7 +114,11 @@ namespace PandaCafe.AI
         {
             if(worldPosition.x >= gridMin.x && worldPosition.x < gridMax.x && worldPosition.y >= gridMin.y && worldPosition.y < gridMax.y)
             {
-                cell = new Vector2Int(Mathf.FloorToInt((gridMax.y - worldPosition.y) / cellSize), Mathf.FloorToInt((worldPosition.x - gridMin.x) / cellSize));
+                int row = Mathf.FloorToInt((gridMax.y - worldPosition.y) / cellSize);
+                int column = Mathf.FloorToInt((worldPosition.x - gridMin.x) / cellSize);
+
+                cell = new Vector2Int(column, row);
+
                 return true;
             }
             
