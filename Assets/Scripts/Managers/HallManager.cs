@@ -39,7 +39,7 @@ namespace PandaCafe.Managers
 
             if (component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
             {
-                bool startedMoving = guest.MoveTo(point);
+                bool startedMoving = guest.MoveToTable(point);
 
                 if(!startedMoving) return;
 
@@ -86,10 +86,7 @@ namespace PandaCafe.Managers
 
         public void ClearTable(Table table)
         {
-            if (table == null)
-            {
-                return;
-            }
+            if (table == null) return;
 
             table.FreeTable();
             guestsByTable.Remove(table);

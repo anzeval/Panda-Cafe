@@ -12,8 +12,13 @@ namespace PandaCafe.NPC
         public int OrdinalQueueNumber {get; private set;}
         public InteractionType Type {get; private set;}
 
+        private const float tableArrivalTolerance = 0.01f;
         private GuestState guestState;
         private NPCMovement movement;
+
+        private bool hasPendingTableTarget;
+        private Vector3 pendingTableTarget;
+
 
         private void Awake()
         {
@@ -60,7 +65,15 @@ namespace PandaCafe.NPC
 
         public bool MoveTo(Vector3 target) 
         {
+            hasPendingTableTarget = false;
             return movement.SetTarget(target);
+        }
+
+        public bool MoveToTable(Vector3 tableTarget)
+        {
+            hasPendingTableTarget = true;
+            pendingTableTarget = tableTarget;
+            return movement.SetTarget(tableTarget);
         }
 
         public void SetOrdinalQueueNumber(int index)
@@ -76,6 +89,9 @@ namespace PandaCafe.NPC
             }
             else if (guestState == GuestState.GoingToTable)
             {
+                if (hasPendingTableTarget && Vector2.Distance(transform.position, pendingTableTarget) > tableArrivalTolerance) return;
+
+                hasPendingTableTarget = false;
                 SetState(GuestState.ReadingMenu);
             }
             else if (guestState == GuestState.GoingToExit)
