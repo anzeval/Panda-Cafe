@@ -22,10 +22,10 @@ namespace PandaCafe.AI
             pathfindingManager = manager;
         }
 
-        public void SetTarget(Vector3 target)
+        public bool SetTarget(Vector3 target)
         {
             finalTarget = target;
-            RequestPath();
+            return RequestPath();
         }
 
          private void Update()
@@ -48,33 +48,33 @@ namespace PandaCafe.AI
             }
         }
 
-        private void RequestPath()
+        private bool RequestPath()
         {
             waypoints.Clear();
 
             if (pathfindingManager == null)
             {
-                Debug.LogWarning($"{name}: PathfindingManager is not initialized, movement request ignored.");
                 isMoving = false;
-
-                return;
+                return false;
             }
 
             List<Cell> path = pathfindingManager.FindPathfFromVector3(transform.position, finalTarget);
 
             if (path == null || path.Count == 0)
             {
-                Debug.LogWarning($"{name}: No valid path found to target {finalTarget}.");
                 isMoving = false;
-
-                return;
+                return false;
             }
 
             for (int i = 1; i < path.Count; i++)
             {
                 waypoints.Enqueue(path[i].WorldPosition);
             }
+            
+            waypoints.Enqueue(finalTarget);
+
             isMoving = true;
+            return true;
         }
 
         private void CompleteMovement()

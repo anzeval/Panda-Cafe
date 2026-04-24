@@ -39,7 +39,20 @@ namespace PandaCafe.Managers
             if (component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
             {
                 guest.SetState(GuestState.GoingToTable);
-                guest.MoveTo(point);
+
+                bool startedMoving = guest.MoveTo(point);
+
+                if (!startedMoving)
+                {
+                    guest.SetState(GuestState.WaitingInQueue);
+
+                    if (component is Table table)
+                    {
+                        table.FreeTable();
+                    }
+
+                    return;
+                }
 
                 queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);
                 queueManager.ReorderQueue();

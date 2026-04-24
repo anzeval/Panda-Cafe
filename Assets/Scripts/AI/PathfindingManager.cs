@@ -32,8 +32,18 @@ namespace PandaCafe.AI
             if(!gridManager.TryGetCell(startCellCoordinates.y, startCellCoordinates.x, out Cell startCell)) return null;
             if(!gridManager.TryGetCell(targetCellCoordinates.y, targetCellCoordinates.x, out Cell targetCell)) return null;
 
-            if (startCell.CellType == CellType.Unwalkable || targetCell.CellType == CellType.Unwalkable)
+            if (startCell.CellType == CellType.Unwalkable)
                 return null;
+
+            if (targetCell.CellType == CellType.Unwalkable)
+            {
+                if (!TryGetNearestWalkableCell(targetCell, out Cell walkableTargetCell))
+                {
+                    return null;
+                }
+
+                targetCell = walkableTargetCell;
+            }
 
             return FindPath(startCell, targetCell);
         }
@@ -102,6 +112,37 @@ namespace PandaCafe.AI
                 }
             }
             return null;
+        }
+
+        private bool TryGetNearestWalkableCell(Cell targetCell, out Cell walkableCell)
+        {
+            walkableCell = null;
+            int maxRadius = Mathf.Max(gridManager.cells.GetLength(0), gridManager.cells.GetLength(1));
+
+            for (int radius = 1; radius < maxRadius; radius++)
+            {
+                for (int row = targetCell.Row - radius; row <= targetCell.Row + radius; row++)
+                {
+                    for (int column = targetCell.Column - radius; column <= targetCell.Column + radius; column++)
+                    {
+                        bool isOnRingBorder = row == targetCell.Row - radius || row == targetCell.Row + radius || column == targetCell.Column - radius || column == targetCell.Column + radius;
+
+                        if (!isOnRingBorder)
+                            continue;
+
+                        if (!gridManager.TryGetCell(row, column, out Cell cell))
+                            continue;
+
+                        if (cell.CellType == CellType.Walkable)
+                        {
+                            walkableCell = cell;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         public List<Cell> ReconstructPath(Cell goal)

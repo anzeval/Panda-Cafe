@@ -57,9 +57,9 @@ namespace PandaCafe.NPC
             this.guestState = guestState;
         }
 
-        public void MoveTo(Vector3 target) 
+        public bool MoveTo(Vector3 target) 
         {
-            movement.SetTarget(target);
+            return movement.SetTarget(target);
         }
 
         public void SetOrdinalQueueNumber(int index)
