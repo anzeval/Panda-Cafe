@@ -3,10 +3,13 @@ using UnityEngine;
 
 namespace PandaCafe.AI
 {
+    // Handles A* pathfinding on grid and returns path between two points.
+    // Converts world positions to cells, finds valid path, handles blocked targets.
     public class PathfindingManager
     {
         private GridManager gridManager;
 
+        // Relative offsets to get all 8 neighboring cells (including diagonals)
         private List<Vector2Int> neighborsCoordinates = new List<Vector2Int>
         {
                 new Vector2Int(1,-1),
@@ -24,6 +27,7 @@ namespace PandaCafe.AI
             this.gridManager = gridManager;
         }
 
+        // Converts world positions to cells and starts pathfinding
         public List<Cell> FindPathfFromVector3(Vector3 start, Vector3 target)
         {
             if(!gridManager.TryGetGridCoordinates(start, out Vector2Int startCellCoordinates)) return null;
@@ -35,6 +39,7 @@ namespace PandaCafe.AI
             if (startCell.CellType == CellType.Unwalkable)
                 return null;
 
+            // If target is blocked, try nearest walkable cell
             if (targetCell.CellType == CellType.Unwalkable)
             {
                 if (!TryGetNearestWalkableCell(targetCell, out Cell walkableTargetCell))
@@ -48,8 +53,10 @@ namespace PandaCafe.AI
             return FindPath(startCell, targetCell);
         }
 
+        // A* pathfinding: finds shortest path between two cells
         public List<Cell> FindPath(Cell start, Cell goal)
         {
+            // Reset all cells
             foreach (Cell cell in gridManager.cells)
             {
                 cell.GCost = int.MaxValue;
@@ -70,6 +77,7 @@ namespace PandaCafe.AI
 
             while (openList.Count > 0)
             {
+                // Pick node with lowest F cost
                 Cell current = openList[0];
 
                 foreach(Cell cell in openList)
@@ -80,6 +88,7 @@ namespace PandaCafe.AI
                     }
                 }
 
+                // Path found
                 if(current == goal) return ReconstructPath(goal);;
 
                 openList.Remove(current);
@@ -89,9 +98,11 @@ namespace PandaCafe.AI
 
                 foreach (Cell neighbor in neighbors)
                 {
+                    // Skip invalid nodes
                     if(closedList.Contains(neighbor) || neighbor.CellType == CellType.Unwalkable)
                         continue;
 
+                    // Prevent diagonal cutting through walls
                     if (IsDiagonalMove(current, neighbor) && IsDiagonalBlocked(current, neighbor))
                         continue;
 
@@ -99,6 +110,7 @@ namespace PandaCafe.AI
 
                     bool isInOpen = openList.Contains(neighbor);
 
+                    // Update better path
                     if (!isInOpen || gCost < neighbor.GCost)
                     {
                         neighbor.GCost = gCost;
@@ -114,17 +126,20 @@ namespace PandaCafe.AI
             return null;
         }
 
+        // Finds closest walkable cell around blocked target
         private bool TryGetNearestWalkableCell(Cell targetCell, out Cell walkableCell)
         {
             walkableCell = null;
             int maxRadius = Mathf.Max(gridManager.cells.GetLength(0), gridManager.cells.GetLength(1));
 
+            // Expanding ring search
             for (int radius = 1; radius < maxRadius; radius++)
             {
                 for (int row = targetCell.Row - radius; row <= targetCell.Row + radius; row++)
                 {
                     for (int column = targetCell.Column - radius; column <= targetCell.Column + radius; column++)
                     {
+                        // Only check ring border
                         bool isOnRingBorder = row == targetCell.Row - radius || row == targetCell.Row + radius || column == targetCell.Column - radius || column == targetCell.Column + radius;
 
                         if (!isOnRingBorder)
@@ -145,6 +160,7 @@ namespace PandaCafe.AI
             return false;
         }
 
+        // Reconstructs path by following parent links
         public List<Cell> ReconstructPath(Cell goal)
         {   
             var path = new List<Cell>();
@@ -159,6 +175,7 @@ namespace PandaCafe.AI
             return path;
         }
 
+        // Returns all valid neighboring cells
         private List<Cell> GetNeighbors(Cell current)
         {
             List<Cell> neighbors = new List<Cell>();
@@ -176,6 +193,8 @@ namespace PandaCafe.AI
 
             return neighbors;
         }
+
+        // Heuristic distance (Euclidean * 10)
         private int Heuristic(Vector2 start, Vector2 finish)
         {
             float xSide = Mathf.Pow((start.x - finish.x), 2f);
@@ -184,19 +203,22 @@ namespace PandaCafe.AI
             return result;
         }
 
+        // Movement cost between cells (straight vs diagonal)
        private int Distance(Cell current, Cell neighbor)
         {
             if(Mathf.Abs(current.Row - neighbor.Row) == 1 && Mathf.Abs(current.Column - neighbor.Column) == 1)
-                return 14;
+                return 14;// diagonal
 
-            return 10; 
+            return 10; // straight
         } 
 
+        // Checks if move is diagonal
         private bool IsDiagonalMove(Cell current, Cell neighbor)
         {
             return Mathf.Abs(current.Row - neighbor.Row) == 1 && Mathf.Abs(current.Column - neighbor.Column) == 1;
         }
 
+        // Prevents moving diagonally through blocked corners
         private bool IsDiagonalBlocked(Cell current, Cell neighbor)
         {
             int horizontalColumn = neighbor.Column;

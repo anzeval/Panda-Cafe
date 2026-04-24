@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace PandaCafe.Interaction
 {
-    // Table behavior and interaction points
+    // Represents a table with interaction points for guest and waiter.
+    // Manages table occupancy and provides positions for interactions.
     public class Table : MonoBehaviour, IInteractable
     {
         [SerializeField] private Transform guestPosition; 
@@ -14,24 +15,26 @@ namespace PandaCafe.Interaction
 
         public InteractionType Type {get; private set;}
 
+        // Initializes table type and sets correct render order
         void Awake() 
         { 
             Type = InteractionType.Table; 
             spriteRenderer.sortingOrder = -(int)(transform.position.y * 100);
         } 
 
-        // Get position by actor
+        // Returns interaction point based on actor (guest/waiter)
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point) 
         { 
             if(actor == InteractionActor.Guest) 
             { 
+                // Prevent guest if table is occupied
                 if(isTaken) 
                 { 
                     point = default;
                     return false;
                 } 
                 
-                OccupyTable();
+                OccupyTable();// Mark as taken
                 point = guestPosition.position; 
                 return true; 
                 
@@ -47,13 +50,13 @@ namespace PandaCafe.Interaction
             return false; 
         }
 
-        // Set table free
+        // Marks table as free
         public void FreeTable()
         {
             isTaken = false;
         }
 
-        // Set table occupied
+        // Marks table as occupied
         public void OccupyTable()
         {
             isTaken = true;

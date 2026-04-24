@@ -43,7 +43,7 @@ namespace PandaCafe.NPC
 
         private void LateUpdate()
         {
-            spriteRenderer.sortingOrder = -(int)(transform.position.y * 100);
+            spriteRenderer.sortingOrder = -(int)(transform.position.y * 100) + 20;
         }
 
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)

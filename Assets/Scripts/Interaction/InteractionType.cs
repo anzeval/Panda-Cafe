@@ -1,6 +1,7 @@
 namespace PandaCafe.Interaction
 {
-    //Represents types of intractable objects.
+    // Defines types of interactable objects in the game.
+    // Used to determine interaction behavior based on object type.
     public enum InteractionType
     {
         Guest,

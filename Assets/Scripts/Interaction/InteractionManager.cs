@@ -5,14 +5,15 @@ using UnityEngine;
 
 namespace PandaCafe.Interaction
 {
-    // Handles interaction routing between input and game logic.
-    // Receives input events (clicks on objects), validates whether the object is interactable, and decides who should handle the interaction — a waiter or a guest.
+    // Routes interactions from input to game logic (waiter or guest).
+    // Selects guest or triggers interaction request based on clicked object.
     public class InteractionManager : MonoBehaviour
     {
         InputHandler inputHandler;
         HallManager hallManager;
         Guest selectedGuest;
 
+        // Initializes dependencies and subscribes to input events
         public void Init(InputHandler inputHandler, HallManager hallManager)
         {
             this.inputHandler = inputHandler;
@@ -21,18 +22,22 @@ namespace PandaCafe.Interaction
             inputHandler.interacted += ChooseObjectForInteraction;
         }
 
+        // Unsubscribes from input events
         void OnDisable()
         {
             inputHandler.interacted -= ChooseObjectForInteraction;
         }
 
-        // Determines whether the interaction should be handled by a waiter or a selected guest, based on the clicked object.
+        // Determines interaction type and routes request to appropriate system
         private void ChooseObjectForInteraction(GameObject go)
         {
+            // Ignore non-interactable objects
             if(!go.TryGetComponent<IInteractable>(out IInteractable component)) return;
 
+            // Select guest if clicked
             if(go.TryGetComponent<Guest>(out Guest guest))
             {
+                // Ignore guests not in queue
                 if (guest.OrdinalQueueNumber < 0)
                 {
                     return;
@@ -42,17 +47,18 @@ namespace PandaCafe.Interaction
             } 
             else
             {
-                // Waiter action
+                // No guest selected → waiter handles interaction
                 if(selectedGuest == null)
                 {
                     hallManager.RequestWaiter(component);
                 } 
-                // Guest action
+                // Guest selected → guest handles interaction
                 else
                 {
                     hallManager.RequestGuest(component, selectedGuest);
                 } 
 
+                // Reset selection after action
                 selectedGuest = null;
             }
         }

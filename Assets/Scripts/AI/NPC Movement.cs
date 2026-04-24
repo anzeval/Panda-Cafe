@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 namespace PandaCafe.AI
 {
+    // Moves NPC along a path to a target using waypoints.
+    // Requests path, follows it step-by-step, and signals when destination is reached.
     public class NPCMovement : MonoBehaviour
     {
         [SerializeField] private float speed = 5f;
@@ -11,10 +13,12 @@ namespace PandaCafe.AI
 
         private static PathfindingManager pathfindingManager;
 
+        // Path points queue    
         private readonly Queue<Vector3> waypoints = new Queue<Vector3>();
         private Vector3 finalTarget;
         private bool isMoving;
 
+        // Fired when destination is reached
         public event Action destinationReached;
 
         public static void Init(PathfindingManager manager)
@@ -22,12 +26,14 @@ namespace PandaCafe.AI
             pathfindingManager = manager;
         }
 
+        // Sets destination and tries to build a path
         public bool SetTarget(Vector3 target)
         {
             finalTarget = target;
             return RequestPath();
         }
 
+        // Moves along waypoints each frame until destination is reached
          private void Update()
         {
             if (!isMoving) return;
@@ -48,6 +54,7 @@ namespace PandaCafe.AI
             }
         }
 
+        // Requests path from pathfinding system and fills waypoint queue
         private bool RequestPath()
         {
             waypoints.Clear();
@@ -77,6 +84,7 @@ namespace PandaCafe.AI
             return true;
         }
 
+        // Stops movement and triggers completion event
         private void CompleteMovement()
         {
             isMoving = false;
