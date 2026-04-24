@@ -1,6 +1,7 @@
 using UnityEngine;
 using PandaCafe.Interaction;
 using PandaCafe.NPC;
+using System.Collections.Generic;
 
 namespace PandaCafe.Managers
 {
@@ -8,6 +9,13 @@ namespace PandaCafe.Managers
     {
         private QueueManager queueManager;
         private Waiter waiter;
+
+        private Dictionary<Table, Guest> guestsByTable;
+
+        private void Awake()
+        {
+            guestsByTable = new Dictionary<Table, Guest>();
+        }
 
         public void Init(QueueManager queueManager, Waiter waiter)
         {
@@ -17,10 +25,7 @@ namespace PandaCafe.Managers
 
         public void RequestWaiter(IInteractable component)
         {
-            if (!CanInteract(InteractionActor.Waiter, component.Type))
-            {
-                return;
-            }
+            if (!CanInteract(InteractionActor.Waiter, component.Type)) return;
 
             if (component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point))
             {
@@ -30,20 +35,20 @@ namespace PandaCafe.Managers
 
         public void RequestGuest(IInteractable component, Guest guest)
         {
-            if (!CanInteract(InteractionActor.Guest, component.Type))
-            {
-                return;
-            }
+            if (!CanInteract(InteractionActor.Guest, component.Type)) return;
 
             if (component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
             {
                 bool startedMoving = guest.MoveTo(point);
 
+                if(!startedMoving) return;
+
                 guest.SetState(GuestState.GoingToTable);
 
-                if(component is Table)
+                if (component is Table table)
                 {
-                    
+                    table.OccupyTable(guest);
+                    guestsByTable[table] = guest;
                 }
 
                 queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);
@@ -59,6 +64,35 @@ namespace PandaCafe.Managers
             }
 
             return interactionType == InteractionType.Table || interactionType == InteractionType.Kitchen || interactionType == InteractionType.Trash;
+        }
+
+        public bool TryGetGuestAtTable(Table table, out Guest guest)
+        {
+            guest = null;
+
+            if (table == null)
+            {
+                return false;
+            }
+
+            if (!guestsByTable.TryGetValue(table, out Guest _guest))
+            {
+                return false;
+            }
+
+            guest = _guest;
+            return guest != null;
+        }
+
+        public void ClearTable(Table table)
+        {
+            if (table == null)
+            {
+                return;
+            }
+
+            table.FreeTable();
+            guestsByTable.Remove(table);
         }
     }
 }

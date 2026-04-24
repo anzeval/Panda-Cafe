@@ -12,10 +12,12 @@ namespace PandaCafe.Interaction
 
         [SerializeField] SpriteRenderer spriteRenderer;
 
+        public Guest CurrentGuest { get; private set; }
+        public bool IsTaken => isTaken;
+
         public InteractionType Type {get; private set;}
 
         private bool isTaken = false;
-        private Guest tableGuest = null;
 
         // Initializes table type and sets correct render order
         void Awake() 
@@ -36,7 +38,6 @@ namespace PandaCafe.Interaction
                     return false;
                 } 
                 
-                OccupyTable();// Mark as taken
                 point = guestPosition.position; 
                 return true; 
             } 
@@ -55,12 +56,14 @@ namespace PandaCafe.Interaction
         public void FreeTable()
         {
             isTaken = false;
+            CurrentGuest = null;
         }
 
         // Marks table as occupied
-        public void OccupyTable()
+        public void OccupyTable(Guest guest)
         {
             isTaken = true;
+            CurrentGuest = guest;
         }
     }
 }
