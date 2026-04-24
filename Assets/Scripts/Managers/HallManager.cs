@@ -26,7 +26,6 @@ namespace PandaCafe.Managers
             {
                 waiter.MoveTo(point);
             }
-            
         }
 
         public void RequestGuest(IInteractable component, Guest guest)
@@ -38,20 +37,13 @@ namespace PandaCafe.Managers
 
             if (component.TryGetWorldPoint(InteractionActor.Guest, out Vector3 point))
             {
-                guest.SetState(GuestState.GoingToTable);
-
                 bool startedMoving = guest.MoveTo(point);
 
-                if (!startedMoving)
+                guest.SetState(GuestState.GoingToTable);
+
+                if(component is Table)
                 {
-                    guest.SetState(GuestState.WaitingInQueue);
-
-                    if (component is Table table)
-                    {
-                        table.FreeTable();
-                    }
-
-                    return;
+                    
                 }
 
                 queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);

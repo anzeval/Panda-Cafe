@@ -9,6 +9,7 @@ namespace PandaCafe.Interaction
         InteractionType Type {get;}
         //The position in the world 
         bool TryGetWorldPoint(InteractionActor actor, out Vector3 point);
+
     }
 }
 

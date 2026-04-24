@@ -75,6 +75,7 @@ namespace PandaCafe.Managers
         {
             guestsQueue[index].SetOrdinalQueueNumber(-1);
             guestsQueue[index] = null;
+
         }
 
         // Reorganizes the queue after a guest is removed.

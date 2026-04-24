@@ -1,3 +1,4 @@
+using PandaCafe.NPC;
 using UnityEngine;
 
 namespace PandaCafe.Interaction
@@ -11,9 +12,10 @@ namespace PandaCafe.Interaction
 
         [SerializeField] SpriteRenderer spriteRenderer;
 
-        private bool isTaken = false;
-
         public InteractionType Type {get; private set;}
+
+        private bool isTaken = false;
+        private Guest tableGuest = null;
 
         // Initializes table type and sets correct render order
         void Awake() 
@@ -37,7 +39,6 @@ namespace PandaCafe.Interaction
                 OccupyTable();// Mark as taken
                 point = guestPosition.position; 
                 return true; 
-                
             } 
             
             if(actor == InteractionActor.Waiter) 

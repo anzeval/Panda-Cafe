@@ -54,6 +54,7 @@ namespace PandaCafe.NPC
 
         public void SetState(GuestState guestState)
         {
+            Debug.Log("set state " + guestState);
             this.guestState = guestState;
         }
 
@@ -71,16 +72,16 @@ namespace PandaCafe.NPC
         {
             if (guestState == GuestState.GoingToQueue)
             {
-                guestState = GuestState.WaitingInQueue;
+                SetState(GuestState.WaitingInQueue);
             }
             else if (guestState == GuestState.GoingToTable)
             {
-                guestState = GuestState.ReadingMenu;
+                SetState(GuestState.ReadingMenu);
             }
             else if (guestState == GuestState.GoingToExit)
             {
-                guestState = GuestState.Quit;
-            }
+                SetState(GuestState.Quit);
+            } 
         }
     }
 }
