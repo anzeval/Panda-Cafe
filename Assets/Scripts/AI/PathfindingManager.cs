@@ -36,8 +36,17 @@ namespace PandaCafe.AI
             if(!gridManager.TryGetCell(startCellCoordinates.y, startCellCoordinates.x, out Cell startCell)) return null;
             if(!gridManager.TryGetCell(targetCellCoordinates.y, targetCellCoordinates.x, out Cell targetCell)) return null;
 
+            // If start is blocked (e.g. guest sits at an unwalkable table cell),
+            // force a detour via the nearest walkable cell.
             if (startCell.CellType == CellType.Unwalkable)
-                return null;
+            {
+                if (!TryGetNearestWalkableCell(startCell, out Cell walkableStartCell))
+                {
+                    return null;
+                }
+
+                startCell = walkableStartCell;
+            }
 
             // If target is blocked, try nearest walkable cell
             if (targetCell.CellType == CellType.Unwalkable)
