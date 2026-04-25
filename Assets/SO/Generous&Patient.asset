@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuestSO
   prefab: {fileID: 694129218409657214, guid: 434cff4f036ed4ce3b776acb6e73a1e7, type: 3}
   WaitTime: 12
+  ReadingMenuTime: 5
   MinTips: 3
   MaxTips: 15

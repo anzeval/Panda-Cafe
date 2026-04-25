@@ -10,15 +10,18 @@ namespace PandaCafe.NPC
 
         // Number in the queue if =-1 => out of queue
         public int OrdinalQueueNumber {get; private set;}
+
         public InteractionType Type {get; private set;}
 
-        private const float tableArrivalTolerance = 0.01f;
+        private GuestSO guestSO;
         private GuestState guestState;
         private NPCMovement movement;
 
+        private const float tableArrivalTolerance = 0.01f;
         private bool hasPendingTableTarget;
         private Vector3 pendingTableTarget;
 
+        private float menuReadingTimer;
 
         private void Awake()
         {
@@ -36,6 +39,29 @@ namespace PandaCafe.NPC
 
             movement = GetComponent<NPCMovement>();
             movement.destinationReached += OnDestinationReached;
+        }
+
+        public void Init(GuestSO _guestSO)
+        {
+            guestSO = _guestSO;
+            menuReadingTimer = guestSO.ReadingMenuTime;
+        }
+
+        private void Update()
+        {
+            HandleMenuReading();
+        }
+
+        private void HandleMenuReading()
+        {
+            if (guestState != GuestState.ReadingMenu) return;
+
+            menuReadingTimer -= Time.deltaTime;
+
+            if (menuReadingTimer <= 0f)
+            {
+                SetState(GuestState.WaitingForOrder);
+            }
         }
 
         private void OnDestroy()

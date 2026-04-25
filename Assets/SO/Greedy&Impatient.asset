@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Greedy&Impatient
   m_EditorClassIdentifier: Assembly-CSharp::GuestSO
   prefab: {fileID: 5598081834774433460, guid: d7fc6a2e41c7d45bd9de79d4d6eefca6, type: 3}
-  WaitTime: 6
+  WaitTime: 8
+  ReadingMenuTime: 3
   MinTips: 0
   MaxTips: 3

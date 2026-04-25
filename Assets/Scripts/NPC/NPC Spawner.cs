@@ -39,8 +39,10 @@ namespace PandaCafe.NPC
 
         private void SpawnGuest()
         {
+            GuestSO guestSO = guestData.GetRandomGuest();
+
             // Spawn random guest
-            GameObject gameObject = Instantiate( guestData.GetRandomGuest().prefab, transform.position, Quaternion.identity, transform);
+            GameObject gameObject = Instantiate( guestSO.prefab, transform.position, Quaternion.identity, transform);
         
             // Ensure that guest has Guest component
             if(!gameObject.TryGetComponent<Guest>(out Guest guest))
@@ -53,6 +55,7 @@ namespace PandaCafe.NPC
 
             // Set initial state
             guest.SetState(GuestState.GoingToQueue);
+            guest.Init(guestSO);
         }
     }
 }

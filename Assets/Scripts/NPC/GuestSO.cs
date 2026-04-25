@@ -14,6 +14,8 @@ namespace PandaCafe.NPC
         // Represents the patience level of the NPC
         public float WaitTime;
 
+        public float ReadingMenuTime;
+
         // Minimum amount of tips the guest can leave
         public float MinTips;
 

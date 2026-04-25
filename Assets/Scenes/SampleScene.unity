@@ -735,7 +735,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.NPC.QueueManager
   startPoint: {fileID: 682623544}
-  queueCapacity: 3
+  queueCapacity: 1
   distance: 1
 --- !u!1 &768139075
 GameObject:
