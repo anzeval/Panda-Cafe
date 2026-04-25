@@ -1,6 +1,7 @@
 using UnityEngine;
 using PandaCafe.Interaction;
 using PandaCafe.AI;
+using System;
 
 namespace PandaCafe.NPC
 {
@@ -23,6 +24,8 @@ namespace PandaCafe.NPC
         private Vector3 pendingTableTarget;
 
         private float stateTimer;
+
+        public event Action<Guest> PatienceExpired;
 
         private void Awake()
         {
@@ -74,7 +77,8 @@ namespace PandaCafe.NPC
                 case GuestState.WaitingForFood : 
                 case GuestState.Eating : 
                     if (TickTimer())
-                        SetState(GuestState.GoingToExit);
+                        HandlePatienceExpired();
+                        
                     break;
                 case GuestState.ReadingMenu : 
                     if (TickTimer())
@@ -89,6 +93,11 @@ namespace PandaCafe.NPC
             return stateTimer <= 0f;
         }
 
+        private void HandlePatienceExpired()
+        {
+            PatienceExpired?.Invoke(this);
+            SetState(GuestState.GoingToExit);
+        }
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)
         {
             point = transform.position;

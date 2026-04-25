@@ -48,6 +48,7 @@ namespace PandaCafe.Managers
                 if (component is Table table)
                 {
                     table.OccupyTable(guest);
+                    guest.PatienceExpired += HandleGuestPatienceExpired;
                     guestsByTable[table] = guest;
                 }
 
@@ -88,8 +89,31 @@ namespace PandaCafe.Managers
         {
             if (table == null) return;
 
+             if (table.CurrentGuest != null)
+            {
+                table.CurrentGuest.PatienceExpired -= HandleGuestPatienceExpired;
+            }
+
             table.FreeTable();
             guestsByTable.Remove(table);
+        }
+
+        private void HandleGuestPatienceExpired(Guest guest)
+        {
+            if (guest == null) return;
+
+            Table targetTable = null;
+            foreach (KeyValuePair<Table, Guest> pair in guestsByTable)
+            {
+                if (pair.Value != guest) continue;
+                targetTable = pair.Key;
+                break;
+            }
+
+            if (targetTable != null)
+            {
+                ClearTable(targetTable);
+            }
         }
     }
 }

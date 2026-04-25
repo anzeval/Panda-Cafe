@@ -22,13 +22,14 @@ namespace PandaCafe.Managers
         // Assigns their queue index (ordinalQueueNumber) and moves them to the correct position using MoveTo
         public void AddGuest(Guest guest)
         {
-            if(guestsQueue == null) return;
+            if(guestsQueue == null || guest == null) return;
 
             for (int i = 0; i < guestsQueue.Length; i++)
             {
                 if(guestsQueue[i] == null)
                 {
                     guestsQueue[i] = guest;
+                    guest.PatienceExpired += OnGuestPatienceExpired;
                     guest.SetOrdinalQueueNumber(i);
                     guest.MoveTo(GetQueueWorldPosition(i));
 
@@ -73,15 +74,35 @@ namespace PandaCafe.Managers
         // Resets their queue number and frees the slot.
         public void RemoveGuestFromQueue(int index)
         {
+            if (guestsQueue == null || index < 0 || index >= guestsQueue.Length) return;
+            if (guestsQueue[index] == null) return;
+
+            guestsQueue[index].PatienceExpired -= OnGuestPatienceExpired;
+
             guestsQueue[index].SetOrdinalQueueNumber(-1);
             guestsQueue[index] = null;
 
+        }
+
+         public void RemoveGuestFromQueue(Guest guest)
+        {
+            if (guestsQueue == null || guest == null) return;
+
+            for (int i = 0; i < guestsQueue.Length; i++)
+            {
+                if (guestsQueue[i] != guest) continue;
+
+                RemoveGuestFromQueue(i);
+                return;
+            }
         }
 
         // Reorganizes the queue after a guest is removed.
         // Shifts all guests forward to fill empty slots, updates their indices, and moves them to new positions.
         public void ReorderQueue()
         {
+            if (guestsQueue == null) return;
+
             for (int i = 0; i < guestsQueue.Length; i++)
             {
                 if(guestsQueue[i] == null)
@@ -100,6 +121,14 @@ namespace PandaCafe.Managers
                     }
                 } 
             }
+        }
+
+         private void OnGuestPatienceExpired(Guest guest)
+        {
+            if (guest == null || guest.OrdinalQueueNumber < 0) return;
+
+            RemoveGuestFromQueue(guest);
+            ReorderQueue();
         }
     }
 }
