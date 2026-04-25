@@ -11,7 +11,6 @@ namespace PandaCafe.NPC
         WaitingForOrder,
         WaitingForFood,
         Eating,
-        GoingToExit,
-        Quit
+        GoingToExit
     }
 }

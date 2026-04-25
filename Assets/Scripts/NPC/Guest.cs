@@ -49,29 +49,7 @@ namespace PandaCafe.NPC
 
         private void Update()
         {
-            switch (guestState)
-            {
-                case GuestState.WaitingInQueue : 
-                    if (TickTimer())
-                        SetState(GuestState.GoingToExit);
-                    break;
-                case GuestState.ReadingMenu : 
-                    if (TickTimer())
-                        SetState(GuestState.WaitingForOrder);
-                    break;
-                case GuestState.WaitingForOrder : 
-                    if (TickTimer())
-                        SetState(GuestState.GoingToExit);
-                    break;
-                case GuestState.WaitingForFood : 
-                    if (TickTimer())
-                        SetState(GuestState.GoingToExit);
-                    break;
-                case GuestState.Eating : 
-                    if (TickTimer())
-                        SetState(GuestState.GoingToExit);
-                    break;
-            }
+            HandleState();
         }
 
         private void LateUpdate()
@@ -84,6 +62,24 @@ namespace PandaCafe.NPC
             if (movement != null)
             {
                 movement.destinationReached -= OnDestinationReached;
+            }
+        }
+
+        private void HandleState()
+        {
+            switch (guestState)
+            {
+                case GuestState.WaitingInQueue : 
+                case GuestState.WaitingForOrder : 
+                case GuestState.WaitingForFood : 
+                case GuestState.Eating : 
+                    if (TickTimer())
+                        SetState(GuestState.GoingToExit);
+                    break;
+                case GuestState.ReadingMenu : 
+                    if (TickTimer())
+                        SetState(GuestState.WaitingForOrder);
+                    break;
             }
         }
 
@@ -101,7 +97,7 @@ namespace PandaCafe.NPC
 
         public void SetState(GuestState guestState)
         {
-            Debug.Log("set state " + guestState);
+            //Debug.Log("set state " + guestState);
             this.guestState = guestState;
 
             switch (guestState)
@@ -127,6 +123,7 @@ namespace PandaCafe.NPC
                     break;
                 case GuestState.GoingToExit:
                     MoveTo(quitPoint.position);
+                    Debug.Log(quitPoint.position);
                     break;
             }
         }
