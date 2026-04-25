@@ -9,6 +9,7 @@ namespace PandaCafe.NPC
     public class NPCSpawner : MonoBehaviour
     {
         [SerializeField] private float spawnRate = 5f;
+        [SerializeField] private Transform quitPoint;
 
         private GuestData guestData;
         private QueueManager queueManager;
@@ -55,7 +56,7 @@ namespace PandaCafe.NPC
 
             // Set initial state
             guest.SetState(GuestState.GoingToQueue);
-            guest.Init(guestSO);
+            guest.Init(guestSO, quitPoint);
         }
     }
 }

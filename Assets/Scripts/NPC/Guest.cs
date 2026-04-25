@@ -8,7 +8,6 @@ namespace PandaCafe.NPC
     public class Guest : MonoBehaviour, IInteractable
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] Transform quitPoint;
 
         // Number in the queue if =-1 => out of queue
         public int OrdinalQueueNumber {get; private set;}
@@ -24,6 +23,7 @@ namespace PandaCafe.NPC
         private Vector3 pendingTableTarget;
 
         private float stateTimer;
+        private Transform quitPoint;
 
         public event Action<Guest> PatienceExpired;
 
@@ -45,9 +45,10 @@ namespace PandaCafe.NPC
             movement.destinationReached += OnDestinationReached;
         }
 
-        public void Init(GuestSO _guestSO)
+        public void Init(GuestSO _guestSO, Transform _quitPoint)
         {
             guestSO = _guestSO;
+            quitPoint = _quitPoint;
         }
 
         private void Update()
@@ -132,7 +133,6 @@ namespace PandaCafe.NPC
                     break;
                 case GuestState.GoingToExit:
                     MoveTo(quitPoint.position);
-                    Debug.Log(quitPoint.position);
                     break;
             }
         }
