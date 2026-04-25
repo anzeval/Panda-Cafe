@@ -1,20 +1,23 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace PandaCafe.Core
 {
-    public static GameState GameState {get; private set;}
-    public static GameManager Instance {get; private set;}
-
-    void Awake()
+    public class GameManager : MonoBehaviour
     {
-        if(Instance != null && Instance != this)
-        {
-            Destroy (gameObject);
-        } 
+        public static GameState GameState {get; private set;}
+        public static GameManager Instance {get; private set;}
 
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-        
-        GameState = GameState.Playing;
+        void Awake()
+        {
+            if(Instance != null && Instance != this)
+            {
+                Destroy (gameObject);
+            } 
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            
+            GameState = GameState.Playing;
+        }
     }
 }

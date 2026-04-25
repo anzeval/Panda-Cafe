@@ -1,5 +1,6 @@
 using System.Collections;
 using PandaCafe.Managers;
+using PandaCafe.Core;
 using UnityEngine;
 
 namespace PandaCafe.NPC

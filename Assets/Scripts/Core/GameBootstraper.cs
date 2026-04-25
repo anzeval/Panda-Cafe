@@ -5,38 +5,41 @@ using PandaCafe.Interaction;
 using PandaCafe.Managers;
 using PandaCafe.NPC;
 
-public class GameBootstraper : MonoBehaviour
+namespace PandaCafe.Core
 {
-    [SerializeField] InputHandler inputHandler;
-
-    [SerializeField] GuestData guestData;
-
-    [SerializeField] QueueManager queueManager;
-    [SerializeField] InteractionManager interactionManager;
-    [SerializeField] HallManager hallManager;
-
-    [SerializeField] GridManager gridManager;
-    [SerializeField] SpriteRenderer background;
-
-    [SerializeField] NPCSpawner npcSpawner;
-
-    [SerializeField] Waiter waiter;
-
-    private PathfindingManager pathfindingManager;
-
-    void Awake()
+    public class GameBootstraper : MonoBehaviour
     {
-        gridManager.Init(background);
+        [SerializeField] InputHandler inputHandler;
 
-        pathfindingManager = new PathfindingManager();
-        pathfindingManager.Init(gridManager);
+        [SerializeField] GuestData guestData;
 
-        NPCMovement.Init(pathfindingManager);
-        
-        interactionManager.Init(inputHandler, hallManager);
-        npcSpawner.Init(guestData, queueManager);
-        hallManager.Init(queueManager, waiter);
+        [SerializeField] QueueManager queueManager;
+        [SerializeField] InteractionManager interactionManager;
+        [SerializeField] HallManager hallManager;
 
-        npcSpawner.RunSpawner();
-    }
+        [SerializeField] GridManager gridManager;
+        [SerializeField] SpriteRenderer background;
+
+        [SerializeField] NPCSpawner npcSpawner;
+
+        [SerializeField] Waiter waiter;
+
+        private PathfindingManager pathfindingManager;
+
+        void Awake()
+        {
+            gridManager.Init(background);
+
+            pathfindingManager = new PathfindingManager();
+            pathfindingManager.Init(gridManager);
+
+            NPCMovement.Init(pathfindingManager);
+            
+            interactionManager.Init(inputHandler, hallManager);
+            npcSpawner.Init(guestData, queueManager);
+            hallManager.Init(queueManager, waiter);
+
+            npcSpawner.RunSpawner();
+        }
+    }   
 }

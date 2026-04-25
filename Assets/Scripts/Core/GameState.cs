@@ -1,6 +1,9 @@
-public enum GameState
+namespace PandaCafe.Core
 {
-    Playing,
-    Win,
-    Lose
+    public enum GameState
+    {
+        Playing,
+        Win,
+        Lose
+    }
 }
