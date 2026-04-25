@@ -12,9 +12,14 @@ namespace PandaCafe.NPC
 
         // Maximum time (in seconds) the guest is willing to wait before leaving
         // Represents the patience level of the NPC
-        public float WaitTime;
+        public float WaitInQueueTime;
 
         public float ReadingMenuTime;
+
+        public float WaitingOrderTime;
+        public float WaitingFoodTime;
+
+        public float EatingTime;
 
         // Minimum amount of tips the guest can leave
         public float MinTips;

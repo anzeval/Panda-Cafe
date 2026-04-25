@@ -7,6 +7,7 @@ namespace PandaCafe.NPC
     public class Guest : MonoBehaviour, IInteractable
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] Transform quitPoint;
 
         // Number in the queue if =-1 => out of queue
         public int OrdinalQueueNumber {get; private set;}
@@ -21,7 +22,7 @@ namespace PandaCafe.NPC
         private bool hasPendingTableTarget;
         private Vector3 pendingTableTarget;
 
-        private float menuReadingTimer;
+        private float stateTimer;
 
         private void Awake()
         {
@@ -44,24 +45,38 @@ namespace PandaCafe.NPC
         public void Init(GuestSO _guestSO)
         {
             guestSO = _guestSO;
-            menuReadingTimer = guestSO.ReadingMenuTime;
         }
 
         private void Update()
         {
-            HandleMenuReading();
+            switch (guestState)
+            {
+                case GuestState.WaitingInQueue : 
+                    if (TickTimer())
+                        SetState(GuestState.GoingToExit);
+                    break;
+                case GuestState.ReadingMenu : 
+                    if (TickTimer())
+                        SetState(GuestState.WaitingForOrder);
+                    break;
+                case GuestState.WaitingForOrder : 
+                    if (TickTimer())
+                        SetState(GuestState.GoingToExit);
+                    break;
+                case GuestState.WaitingForFood : 
+                    if (TickTimer())
+                        SetState(GuestState.GoingToExit);
+                    break;
+                case GuestState.Eating : 
+                    if (TickTimer())
+                        SetState(GuestState.GoingToExit);
+                    break;
+            }
         }
 
-        private void HandleMenuReading()
+        private void LateUpdate()
         {
-            if (guestState != GuestState.ReadingMenu) return;
-
-            menuReadingTimer -= Time.deltaTime;
-
-            if (menuReadingTimer <= 0f)
-            {
-                SetState(GuestState.WaitingForOrder);
-            }
+            spriteRenderer.sortingOrder = -(int)(transform.position.y * 100) + 20;
         }
 
         private void OnDestroy()
@@ -72,9 +87,10 @@ namespace PandaCafe.NPC
             }
         }
 
-        private void LateUpdate()
+         private bool TickTimer()
         {
-            spriteRenderer.sortingOrder = -(int)(transform.position.y * 100) + 20;
+            stateTimer -= Time.deltaTime;
+            return stateTimer <= 0f;
         }
 
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)
@@ -87,6 +103,32 @@ namespace PandaCafe.NPC
         {
             Debug.Log("set state " + guestState);
             this.guestState = guestState;
+
+            switch (guestState)
+            {
+                case GuestState.WaitingInQueue:
+                    stateTimer = guestSO.WaitInQueueTime;
+                    break;
+
+                case GuestState.ReadingMenu:
+                    stateTimer = guestSO.ReadingMenuTime;
+                    break;
+
+                case GuestState.WaitingForOrder:
+                    stateTimer = guestSO.WaitingOrderTime;
+                    break;
+
+                case GuestState.WaitingForFood:
+                    stateTimer = guestSO.WaitingFoodTime;
+                    break;
+
+                case GuestState.Eating:
+                    stateTimer = guestSO.EatingTime;
+                    break;
+                case GuestState.GoingToExit:
+                    MoveTo(quitPoint.position);
+                    break;
+            }
         }
 
         public bool MoveTo(Vector3 target) 
@@ -122,7 +164,7 @@ namespace PandaCafe.NPC
             }
             else if (guestState == GuestState.GoingToExit)
             {
-                SetState(GuestState.Quit);
+                Destroy(gameObject);
             } 
         }
     }
