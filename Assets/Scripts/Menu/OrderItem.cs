@@ -3,12 +3,12 @@ namespace PandaCafe.Menu
     public class OrderItem 
     {
         public MenuItemSO menuItemSO {get; private set;}
-        public int count {get; private set;}
+        public int quantity {get; private set;}
 
-        public OrderItem(MenuItemSO menuItemSO, int count)
+        public OrderItem(MenuItemSO menuItemSO, int quantity)
         {
             this.menuItemSO = menuItemSO;
-            this.count = count;
+            this.quantity = quantity;
         }
     }
 }
