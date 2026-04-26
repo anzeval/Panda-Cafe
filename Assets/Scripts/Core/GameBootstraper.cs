@@ -4,6 +4,7 @@ using PandaCafe.Input;
 using PandaCafe.Interaction;
 using PandaCafe.Managers;
 using PandaCafe.NPC;
+using PandaCafe.Menu;
 
 namespace PandaCafe.Core
 {
@@ -14,8 +15,12 @@ namespace PandaCafe.Core
         [SerializeField] GuestData guestData;
 
         [SerializeField] QueueManager queueManager;
+
         [SerializeField] InteractionManager interactionManager;
+
         [SerializeField] HallManager hallManager;
+        [SerializeField] MenuData menuData;
+        [SerializeField] OrderManager orderManager;
 
         [SerializeField] GridManager gridManager;
         [SerializeField] SpriteRenderer background;
@@ -37,7 +42,7 @@ namespace PandaCafe.Core
             
             interactionManager.Init(inputHandler, hallManager);
             npcSpawner.Init(guestData, queueManager);
-            hallManager.Init(queueManager, waiter);
+            hallManager.Init(queueManager, waiter, menuData, orderManager);
 
             npcSpawner.RunSpawner();
         }

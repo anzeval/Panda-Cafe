@@ -2,25 +2,42 @@ using UnityEngine;
 using PandaCafe.Interaction;
 using PandaCafe.NPC;
 using System.Collections.Generic;
+using PandaCafe.Menu;
 
 namespace PandaCafe.Managers
 {
     public class HallManager : MonoBehaviour
     {
+        private MenuData menuData;
+        private OrderManager orderManager;
+
         private QueueManager queueManager;
         private Waiter waiter;
 
         private Dictionary<Table, Guest> guestsByTable;
+        private Table pendingOrderTable;
 
         private void Awake()
         {
             guestsByTable = new Dictionary<Table, Guest>();
         }
 
-        public void Init(QueueManager queueManager, Waiter waiter)
+        public void Init(QueueManager queueManager, Waiter waiter, MenuData menuData, OrderManager orderManager)
         {
             this.queueManager = queueManager;
             this.waiter = waiter;
+            this.menuData = menuData;
+            this.orderManager = orderManager;
+
+            this.waiter.ArrivedAtDestination += HandleWaiterArrived;
+        }
+
+        private void OnDestroy()
+        {
+            if (waiter != null)
+            {
+                waiter.ArrivedAtDestination -= HandleWaiterArrived;
+            }
         }
 
         public void RequestWaiter(IInteractable component)
@@ -29,7 +46,20 @@ namespace PandaCafe.Managers
 
             if (component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point))
             {
-                waiter.MoveTo(point);
+                bool startedMoving = waiter.MoveTo(point);
+                if (!startedMoving)
+                {
+                    pendingOrderTable = null;
+                    return;
+                }
+
+                if (component is Table table && TryGetGuestAtTable(table, out Guest guest) && guest.State == GuestState.WaitingForOrder)
+                {
+                    pendingOrderTable = table;
+                    return;
+                }
+
+                pendingOrderTable = null;
             }
         }
 
@@ -114,6 +144,26 @@ namespace PandaCafe.Managers
             {
                 ClearTable(targetTable);
             }
+        }
+
+        private void HandleWaiterArrived()
+        {
+            if (pendingOrderTable == null) return;
+
+            if (!TryGetGuestAtTable(pendingOrderTable, out Guest guest) || guest.State != GuestState.WaitingForOrder)
+            {
+                pendingOrderTable = null;
+                return;
+            }
+
+            MenuItemSO orderedItem = menuData != null ? menuData.GetRandomMenuItem() : null;
+            if (orderedItem != null && orderManager != null)
+            {
+                orderManager.RegisterOrder(guest, pendingOrderTable, orderedItem);
+            }
+
+            guest.SetState(GuestState.WaitingForFood);
+            pendingOrderTable = null;
         }
     }
 }

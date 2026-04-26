@@ -1,10 +1,13 @@
 using UnityEngine;
 using PandaCafe.AI;
+using System;
 
 public class Waiter : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     private NPCMovement movement;
+
+    public event Action ArrivedAtDestination;
 
     private void Awake()
     {
@@ -17,15 +20,30 @@ public class Waiter : MonoBehaviour
                 movement = gameObject.AddComponent<NPCMovement>();
             }
         }
+
+        movement.destinationReached += OnDestinationReached;
     }
 
-    private void LateUpdate()
+      private void LateUpdate()
     {
         spriteRenderer.sortingOrder = -(int)(transform.position.y * 100);
     }
 
-    public void MoveTo(Vector3 target)
+    private void OnDestroy()
     {
-        movement.SetTarget(target);
+        if (movement != null)
+        {
+            movement.destinationReached -= OnDestinationReached;
+        }
+    }
+
+    private void OnDestinationReached()
+    {
+        ArrivedAtDestination?.Invoke();
+    }
+
+    public bool MoveTo(Vector3 target)
+    {
+        return movement.SetTarget(target);
     }
 }

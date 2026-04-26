@@ -14,6 +14,8 @@ namespace PandaCafe.NPC
 
         public InteractionType Type {get; private set;}
 
+        public GuestState State => guestState;
+
         private GuestSO guestSO;
         private GuestState guestState;
         private NPCMovement movement;
@@ -107,7 +109,6 @@ namespace PandaCafe.NPC
 
         public void SetState(GuestState guestState)
         {
-            //Debug.Log("set state " + guestState);
             this.guestState = guestState;
 
             switch (guestState)
@@ -135,6 +136,7 @@ namespace PandaCafe.NPC
                     MoveTo(quitPoint.position);
                     break;
             }
+            Debug.Log(guestState);
         }
 
         public bool MoveTo(Vector3 target) 
