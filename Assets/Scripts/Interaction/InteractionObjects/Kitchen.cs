@@ -1,5 +1,4 @@
 using UnityEngine;
-using PandaCafe.Interaction;
 
 namespace PandaCafe.Interaction
 {
