@@ -1,14 +1,20 @@
+using PandaCafe.Interaction;
+using PandaCafe.NPC;
 namespace PandaCafe.Menu
 {
     public class OrderItem 
     {
-        public MenuItemSO menuItemSO {get; private set;}
-        public int quantity {get; private set;}
+        public MenuItemSO MenuItemSO { get; private set; }
+        public int Quantity { get; private set; }
+        public Guest Guest { get; private set; }
+        public Table Table { get; private set; }
 
-        public OrderItem(MenuItemSO menuItemSO, int quantity)
+        public OrderItem(MenuItemSO menuItemSO, int quantity, Guest guest, Table table)
         {
-            this.menuItemSO = menuItemSO;
-            this.quantity = quantity;
+            MenuItemSO = menuItemSO;
+            Quantity = quantity;
+            Guest = guest;
+            Table = table;
         }
     }
 }

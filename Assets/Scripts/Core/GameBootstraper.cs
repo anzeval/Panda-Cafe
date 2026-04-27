@@ -28,6 +28,7 @@ namespace PandaCafe.Core
         [SerializeField] NPCSpawner npcSpawner;
 
         [SerializeField] Waiter waiter;
+        [SerializeField] Kitchen kitchen;
 
         private PathfindingManager pathfindingManager;
 
@@ -43,6 +44,7 @@ namespace PandaCafe.Core
             interactionManager.Init(inputHandler, hallManager);
             npcSpawner.Init(guestData, queueManager);
             hallManager.Init(queueManager, waiter, menuData, orderManager);
+            kitchen.Init(orderManager);
 
             npcSpawner.RunSpawner();
         }

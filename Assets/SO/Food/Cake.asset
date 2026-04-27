@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9163bb2c9ea444198a2177987b84c29, type: 3}
   m_Name: Cake
   m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.Menu.MenuItemSO
-  prefab: {fileID: 6341160144911521109, guid: 26934e9e5ad68442082e9379ec3b37b5, type: 3}
-  sprite: {fileID: 21300000, guid: 504d8fd0b53764fd2a002a64f10cc1b9, type: 3}
-  name: Cake
-  price: 10
+  Prefab: {fileID: 6341160144911521109, guid: 26934e9e5ad68442082e9379ec3b37b5, type: 3}
+  Sprite: {fileID: 21300000, guid: 504d8fd0b53764fd2a002a64f10cc1b9, type: 3}
+  Name: Cake
+  Price: 8
