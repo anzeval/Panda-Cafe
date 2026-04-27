@@ -2,6 +2,7 @@ using UnityEngine;
 using PandaCafe.Interaction;
 using PandaCafe.NPC;
 using PandaCafe.Menu;
+using PandaCafe.WaiterNPC;
 
 namespace PandaCafe.HallManagment
 {
@@ -14,16 +15,18 @@ namespace PandaCafe.HallManagment
         private GuestPatienceCoordinator guestPatienceCoordinator;
         private GuestFlowService guestFlowService;
         private WaiterOrderService waiterOrderService;
+        private Kitchen kitchen;
 
-        public void Init(QueueManager queueManager, Waiter waiter, MenuData menuData, OrderManager orderManager)
+        public void Init(QueueManager queueManager, Waiter waiter, MenuData menuData, OrderManager orderManager, Kitchen kitchen)
         {
             this.queueManager = queueManager;
             this.waiter = waiter;
+            this.kitchen = kitchen;
 
             seatingService = new SeatingService();
             guestPatienceCoordinator = new GuestPatienceCoordinator(seatingService);
             guestFlowService = new GuestFlowService(this.queueManager, seatingService, guestPatienceCoordinator);
-            waiterOrderService = new WaiterOrderService(menuData, orderManager, seatingService);
+            waiterOrderService = new WaiterOrderService(menuData, orderManager, seatingService, kitchen);
 
             this.waiter.ArrivedAtDestination += waiterOrderService.HandleWaiterArrived;
         }

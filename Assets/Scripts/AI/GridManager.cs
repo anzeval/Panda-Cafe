@@ -50,25 +50,6 @@ namespace PandaCafe.AI
             cells = new Cell[gridHeight, gridWidth];
         }
 
-        void OnDrawGizmos()
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                for (int i = 0; i < gridWidth; i++)
-                {
-                    if(cells[y,i].CellType == CellType.Walkable)
-                    {
-                        Gizmos.color = Color.green;
-                    } 
-                    else
-                    {
-                        Gizmos.color = Color.red;
-                    }
-                    Gizmos.DrawWireCube(GetWorldPosition(y, i), new Vector3(cellSize, cellSize, 0));
-                }
-            }
-        }
-
         // Creates and initializes all cells in the grid
         private void InitializeGrid()
         {

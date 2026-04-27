@@ -5,6 +5,7 @@ using PandaCafe.Interaction;
 using PandaCafe.HallManagment;
 using PandaCafe.NPC;
 using PandaCafe.Menu;
+using PandaCafe.WaiterNPC;
 
 namespace PandaCafe.Core
 {
@@ -43,7 +44,7 @@ namespace PandaCafe.Core
             
             interactionManager.Init(inputHandler, hallManager);
             npcSpawner.Init(guestData, queueManager);
-            hallManager.Init(queueManager, waiter, menuData, orderManager);
+            hallManager.Init(queueManager, waiter, menuData, orderManager, kitchen);
             kitchen.Init(orderManager);
 
             npcSpawner.RunSpawner();

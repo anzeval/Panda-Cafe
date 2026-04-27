@@ -123,20 +123,23 @@ namespace PandaCafe.NPC
 
                 case GuestState.WaitingForOrder:
                     stateTimer = guestSO.WaitingOrderTime;
+                    Debug.Log("wait for order");
                     break;
 
                 case GuestState.WaitingForFood:
                     stateTimer = guestSO.WaitingFoodTime;
+                    Debug.Log("wait for food");
                     break;
 
                 case GuestState.Eating:
                     stateTimer = guestSO.EatingTime;
+                    Debug.Log("eating");
                     break;
                 case GuestState.GoingToExit:
                     MoveTo(quitPoint.position);
+                    Debug.Log("quit");
                     break;
             }
-            Debug.Log(guestState);
         }
 
         public bool MoveTo(Vector3 target) 
