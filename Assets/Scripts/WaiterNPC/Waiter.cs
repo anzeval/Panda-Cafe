@@ -7,6 +7,7 @@ namespace PandaCafe.WaiterNPC
     public class Waiter : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Vector3 carriedDishLocalOffset = new Vector3(0f, 1f, 0f);
         private NPCMovement movement;
 
         public event Action ArrivedAtDestination;
@@ -47,6 +48,14 @@ namespace PandaCafe.WaiterNPC
         public bool MoveTo(Vector3 target)
         {
             return movement.SetTarget(target);
+        }
+
+        public void PlaceDishInHands(Transform dishTransform)
+        {
+            if (dishTransform == null) return;
+
+            dishTransform.SetParent(transform, false);
+            dishTransform.localPosition = carriedDishLocalOffset;
         }
     }
 }

@@ -124,7 +124,7 @@ namespace PandaCafe.WaiterNPC
 
             if (carriedDish != null && waiter != null)
             {
-                carriedDish.transform.SetParent(waiter.transform, true);
+                waiter.PlaceDishInHands(carriedDish.transform);
             }
         }
 
