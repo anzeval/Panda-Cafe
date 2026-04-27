@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuestSO
   prefab: {fileID: 694129218409657214, guid: 434cff4f036ed4ce3b776acb6e73a1e7, type: 3}
   WaitInQueueTime: 12
-  ReadingMenuTime: 12
+  ReadingMenuTime: 0
   WaitingOrderTime: 12
   WaitingFoodTime: 12
   EatingTime: 5

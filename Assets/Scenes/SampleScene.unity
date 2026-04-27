@@ -1998,6 +1998,14 @@ PrefabInstance:
       propertyPath: speed
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 630817284431670542, guid: fd399167723de431888e7edc604f07aa, type: 3}
+      propertyPath: carriedDishLocalOffset.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4940155945839316128, guid: fd399167723de431888e7edc604f07aa, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ddc9bae76bef84bc5858e9bcc4de775f, type: 3}
     - target: {fileID: 5080272671832835253, guid: fd399167723de431888e7edc604f07aa, type: 3}
       propertyPath: m_Name
       value: Waiter

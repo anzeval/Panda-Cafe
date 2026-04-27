@@ -65,7 +65,6 @@ namespace PandaCafe.WaiterNPC
                     break;
                 case WaiterTask.DeliveringDish:
                     HandleDeliveringDish();
-                    Debug.Log("deliver dish");
                     break;
             }
 
@@ -76,7 +75,7 @@ namespace PandaCafe.WaiterNPC
         {
             if (table == null) return WaiterTask.None;
 
-            if (carriedOrder != null && carriedOrder.Table == table)
+            if (CanDeliverToTable(table))
             {
                 return WaiterTask.DeliveringDish;
             }
@@ -89,6 +88,14 @@ namespace PandaCafe.WaiterNPC
 
             pendingOrderTable = null;
             return WaiterTask.None;
+        }
+
+        private bool CanDeliverToTable(Table table)
+        {
+            if (carriedOrder == null || carriedOrder.Table != table) return false;
+            if (carriedOrder.Guest == null) return false;
+
+            return seatingService.TryGetGuestAtTable(table, out Guest seatedGuest) && seatedGuest == carriedOrder.Guest && seatedGuest.State == GuestState.WaitingForFood;
         }
 
         private void HandleTakingOrder()
@@ -132,10 +139,9 @@ namespace PandaCafe.WaiterNPC
         {
             if (carriedOrder == null) return;
 
-            if (carriedOrder.Guest != null && carriedOrder.Guest.State == GuestState.WaitingForFood)
-            {
-                carriedOrder.Guest.SetState(GuestState.Eating);
-            }
+            if (!CanDeliverToTable(carriedOrder.Table)) return;
+
+            carriedOrder.Guest.SetState(GuestState.Eating);
 
             if (carriedDish != null)
             {
