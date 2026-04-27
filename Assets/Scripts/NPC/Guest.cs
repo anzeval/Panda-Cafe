@@ -128,7 +128,6 @@ namespace PandaCafe.NPC
 
                 case GuestState.WaitingForFood:
                     stateTimer = guestSO.WaitingFoodTime;
-                    Debug.Log("wait for food");
                     break;
 
                 case GuestState.Eating:
