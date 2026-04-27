@@ -5,6 +5,7 @@ namespace PandaCafe.WaiterNPC
         None,
         TakingOrder,
         PickingUpDish,
-        DeliveringDish
+        DeliveringDish,
+        DiscardingDish
     }   
 }

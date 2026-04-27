@@ -47,6 +47,9 @@ namespace PandaCafe.WaiterNPC
                 case Table table:
                     currentTask = TryPrepareTableTask(table);
                     break;
+                case Trash:
+                    currentTask = carriedDish != null ? WaiterTask.DiscardingDish : WaiterTask.None;
+                    break;
                 default:
                     currentTask = WaiterTask.None;
                     break; 
@@ -65,6 +68,9 @@ namespace PandaCafe.WaiterNPC
                     break;
                 case WaiterTask.DeliveringDish:
                     HandleDeliveringDish();
+                    break;
+                case WaiterTask.DiscardingDish:
+                    HandleDiscardingDish();
                     break;
             }
 
@@ -143,6 +149,17 @@ namespace PandaCafe.WaiterNPC
 
             carriedOrder.Guest.SetState(GuestState.Eating);
 
+            if (carriedDish != null)
+            {
+                Object.Destroy(carriedDish);
+                carriedDish = null;
+            }
+
+            carriedOrder = null;
+        }
+
+        private void HandleDiscardingDish()
+        {
             if (carriedDish != null)
             {
                 Object.Destroy(carriedDish);
