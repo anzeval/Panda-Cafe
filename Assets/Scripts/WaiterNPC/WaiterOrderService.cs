@@ -2,6 +2,7 @@ using PandaCafe.Interaction;
 using PandaCafe.Menu;
 using PandaCafe.NPC;
 using PandaCafe.HallManagment;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PandaCafe.WaiterNPC
@@ -15,8 +16,10 @@ namespace PandaCafe.WaiterNPC
 
         private Waiter waiter;
         private Table pendingOrderTable;
+        private Table pendingDeliveryTable;
         private OrderItem carriedOrder;
         private GameObject carriedDish;
+        private readonly Dictionary<Guest, MenuItemSO> orderedItemsByGuest = new Dictionary<Guest, MenuItemSO>();
 
         private WaiterTask currentTask;
 
@@ -83,6 +86,7 @@ namespace PandaCafe.WaiterNPC
 
             if (CanDeliverToTable(table))
             {
+                pendingDeliveryTable = table;
                 return WaiterTask.DeliveringDish;
             }
 
@@ -93,15 +97,17 @@ namespace PandaCafe.WaiterNPC
             }
 
             pendingOrderTable = null;
+            pendingDeliveryTable = null;
             return WaiterTask.None;
         }
 
         private bool CanDeliverToTable(Table table)
         {
-            if (carriedOrder == null || carriedOrder.Table != table) return false;
-            if (carriedOrder.Guest == null) return false;
+            if (carriedOrder?.MenuItemSO == null) return false;
+            if (!seatingService.TryGetGuestAtTable(table, out Guest seatedGuest) || seatedGuest == null) return false;
+            if (seatedGuest.State != GuestState.WaitingForFood) return false;
 
-            return seatingService.TryGetGuestAtTable(table, out Guest seatedGuest) && seatedGuest == carriedOrder.Guest && seatedGuest.State == GuestState.WaitingForFood;
+            return orderedItemsByGuest.TryGetValue(seatedGuest, out MenuItemSO orderedItem) && orderedItem == carriedOrder.MenuItemSO;
         }
 
         private void HandleTakingOrder()
@@ -118,6 +124,7 @@ namespace PandaCafe.WaiterNPC
             if (orderedItem != null && orderManager != null)
             {
                 orderManager.RegisterOrder(guest, pendingOrderTable, orderedItem);
+                orderedItemsByGuest[guest] = orderedItem;
             }
 
             guest.SetState(GuestState.WaitingForFood);
@@ -144,10 +151,12 @@ namespace PandaCafe.WaiterNPC
         private void HandleDeliveringDish()
         {
             if (carriedOrder == null) return;
+            if (carriedOrder == null || pendingDeliveryTable == null) return;
+            if (!seatingService.TryGetGuestAtTable(pendingDeliveryTable, out Guest seatedGuest) || seatedGuest == null) return;
+            if (!CanDeliverToTable(pendingDeliveryTable)) return;
 
-            if (!CanDeliverToTable(carriedOrder.Table)) return;
-
-            carriedOrder.Guest.SetState(GuestState.Eating);
+            seatedGuest.SetState(GuestState.Eating);
+            orderedItemsByGuest.Remove(seatedGuest);
 
             if (carriedDish != null)
             {
@@ -155,6 +164,7 @@ namespace PandaCafe.WaiterNPC
                 carriedDish = null;
             }
 
+            pendingDeliveryTable = null;
             carriedOrder = null;
         }
 
@@ -166,6 +176,7 @@ namespace PandaCafe.WaiterNPC
                 carriedDish = null;
             }
 
+            pendingDeliveryTable = null;
             carriedOrder = null;
         }
     }
