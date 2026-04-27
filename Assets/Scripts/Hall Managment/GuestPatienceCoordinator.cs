@@ -1,16 +1,39 @@
-using UnityEngine;
+using PandaCafe.Interaction;
+using PandaCafe.NPC;
 
-public class GuestPatienceCoordinator : MonoBehaviour
+namespace PandaCafe.HallManagment
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GuestPatienceCoordinator
     {
-        
-    }
+        private readonly SeatingService seatingService;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        public GuestPatienceCoordinator(SeatingService seatingService)
+        {
+            this.seatingService = seatingService;
+        }
+
+        public void RegisterGuestAtTable(Guest guest)
+        {
+            if (guest == null) return;
+
+            guest.PatienceExpired -= HandleGuestPatienceExpired;
+            guest.PatienceExpired += HandleGuestPatienceExpired;
+        }
+
+        public void UnregisterGuest(Guest guest)
+        {
+            if (guest == null) return;
+
+            guest.PatienceExpired -= HandleGuestPatienceExpired;
+        }
+
+        private void HandleGuestPatienceExpired(Guest guest)
+        {
+            if (guest == null) return;
+            if (!seatingService.TryGetTableByGuest(guest, out Table table)) return;
+
+            UnregisterGuest(guest);
+            seatingService.ClearTable(table);
+        }
+    }   
 }

@@ -1,16 +1,17 @@
-using UnityEngine;
+using PandaCafe.Interaction;
 
-public class HallInteractionRouter : MonoBehaviour
+namespace PandaCafe.HallManagment
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public  static class HallInteractionRouter
     {
-        
-    }
+        public static bool CanInteract(InteractionActor actor, InteractionType interactionType)
+        {
+            if (actor == InteractionActor.Guest)
+            {
+                return interactionType == InteractionType.Table;
+            }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            return interactionType == InteractionType.Table || interactionType == InteractionType.Kitchen || interactionType == InteractionType.Trash;
+        }
     }
 }

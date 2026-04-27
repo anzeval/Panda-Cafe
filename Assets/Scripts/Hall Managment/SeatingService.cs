@@ -6,36 +6,38 @@ namespace PandaCafe.HallManagment
 {
     public class SeatingService
     {
-        public Dictionary<Table, Guest> guestsByTable {get; private set;}
-
-        public SeatingService()
-        {
-            guestsByTable = new Dictionary<Table, Guest>();
-        }
+        private readonly Dictionary<Table, Guest> guestsByTable = new Dictionary<Table, Guest>();
+        private readonly Dictionary<Guest, Table> tablesByGuest = new Dictionary<Guest, Table>();
 
         public bool TryGetGuestAtTable(Table table, out Guest guest)
         {
             guest = null;
 
-            if (table == null)
-            {
-                return false;
-            }
+            if (table == null) return false;
+            if (!guestsByTable.TryGetValue(table, out Guest foundGuest)) return false;
 
-            if (!guestsByTable.TryGetValue(table, out Guest _guest))
-            {
-                return false;
-            }
-
-            guest = _guest;
+            guest = foundGuest;
             return guest != null;
         }
 
-        public bool TrySetGuest(Guest guest, Table table)
+        public bool TryGetTableByGuest(Guest guest, out Table table)
         {
-            if(guest == null || table == null) return false;
+            table = null;
 
+            if (guest == null) return false;
+            if (!tablesByGuest.TryGetValue(guest, out Table foundTable)) return false;
+
+            table = foundTable;
+            return table != null;
+        }
+
+        public bool SeatGuestAtTable(Guest guest, Table table)
+        {
+            if (guest == null || table == null) return false;
+
+            table.OccupyTable(guest);
             guestsByTable[table] = guest;
+            tablesByGuest[guest] = table;
             return true;
         }
 
@@ -43,9 +45,9 @@ namespace PandaCafe.HallManagment
         {
             if (table == null) return;
 
-             if (table.CurrentGuest != null)
+            if (guestsByTable.TryGetValue(table, out Guest guest) && guest != null)
             {
-                table.CurrentGuest.PatienceExpired -= HandleGuestPatienceExpired;
+                tablesByGuest.Remove(guest);
             }
 
             table.FreeTable();
