@@ -1,7 +1,7 @@
 using UnityEngine;
 using PandaCafe.NPC;
 
-namespace PandaCafe.Managers
+namespace PandaCafe.HallManagment
 {
     // Manages a queue of guests: stores their order, controls capacity, and assigns world positions where each guest should stand
     public class QueueManager : MonoBehaviour

@@ -1,5 +1,5 @@
 using PandaCafe.NPC;
-using PandaCafe.Managers;
+using PandaCafe.HallManagment;
 using PandaCafe.Input;
 using UnityEngine;
 

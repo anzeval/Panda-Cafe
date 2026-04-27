@@ -2,7 +2,7 @@ using UnityEngine;
 using PandaCafe.AI;
 using PandaCafe.Input;
 using PandaCafe.Interaction;
-using PandaCafe.Managers;
+using PandaCafe.HallManagment;
 using PandaCafe.NPC;
 using PandaCafe.Menu;
 

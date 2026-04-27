@@ -4,23 +4,17 @@ using PandaCafe.NPC;
 using System.Collections.Generic;
 using PandaCafe.Menu;
 
-namespace PandaCafe.Managers
+namespace PandaCafe.HallManagment
 {
     public class HallManager : MonoBehaviour
     {
         private MenuData menuData;
         private OrderManager orderManager;
+        private SeatingService seatingService;
+        private WaiterOrderService waiterOrderService;
 
         private QueueManager queueManager;
         private Waiter waiter;
-
-        private Dictionary<Table, Guest> guestsByTable;
-        private Table pendingOrderTable;
-
-        private void Awake()
-        {
-            guestsByTable = new Dictionary<Table, Guest>();
-        }
 
         public void Init(QueueManager queueManager, Waiter waiter, MenuData menuData, OrderManager orderManager)
         {
@@ -29,14 +23,17 @@ namespace PandaCafe.Managers
             this.menuData = menuData;
             this.orderManager = orderManager;
 
-            this.waiter.ArrivedAtDestination += HandleWaiterArrived;
+            seatingService = new SeatingService();
+            waiterOrderService = new WaiterOrderService(menuData, orderManager);
+
+            this.waiter.ArrivedAtDestination += waiterOrderService.HandleWaiterArrived;
         }
 
-        private void OnDestroy()
+         private void OnDestroy()
         {
             if (waiter != null)
             {
-                waiter.ArrivedAtDestination -= HandleWaiterArrived;
+                waiter.ArrivedAtDestination -= waiterOrderService.HandleWaiterArrived;
             }
         }
 
@@ -47,19 +44,20 @@ namespace PandaCafe.Managers
             if (component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point))
             {
                 bool startedMoving = waiter.MoveTo(point);
+                
                 if (!startedMoving)
                 {
-                    pendingOrderTable = null;
+                    waiterOrderService.SetPendingTable(null);
                     return;
                 }
 
-                if (component is Table table && TryGetGuestAtTable(table, out Guest guest) && guest.State == GuestState.WaitingForOrder)
+                if (component is Table table && seatingService.TryGetGuestAtTable(table, out Guest guest) && guest.State == GuestState.WaitingForOrder)
                 {
-                    pendingOrderTable = table;
+                    waiterOrderService.SetPendingTable(table);
                     return;
                 }
 
-                pendingOrderTable = null;
+                waiterOrderService.SetPendingTable(null);
             }
         }
 
@@ -79,7 +77,7 @@ namespace PandaCafe.Managers
                 {
                     table.OccupyTable(guest);
                     guest.PatienceExpired += HandleGuestPatienceExpired;
-                    guestsByTable[table] = guest;
+                    seatingService.TrySetGuest(guest, table);
                 }
 
                 queueManager.RemoveGuestFromQueue(guest.OrdinalQueueNumber);
@@ -97,43 +95,13 @@ namespace PandaCafe.Managers
             return interactionType == InteractionType.Table || interactionType == InteractionType.Kitchen || interactionType == InteractionType.Trash;
         }
 
-        public bool TryGetGuestAtTable(Table table, out Guest guest)
-        {
-            guest = null;
-
-            if (table == null)
-            {
-                return false;
-            }
-
-            if (!guestsByTable.TryGetValue(table, out Guest _guest))
-            {
-                return false;
-            }
-
-            guest = _guest;
-            return guest != null;
-        }
-
-        public void ClearTable(Table table)
-        {
-            if (table == null) return;
-
-             if (table.CurrentGuest != null)
-            {
-                table.CurrentGuest.PatienceExpired -= HandleGuestPatienceExpired;
-            }
-
-            table.FreeTable();
-            guestsByTable.Remove(table);
-        }
 
         private void HandleGuestPatienceExpired(Guest guest)
         {
             if (guest == null) return;
 
             Table targetTable = null;
-            foreach (KeyValuePair<Table, Guest> pair in guestsByTable)
+            foreach (KeyValuePair<Table, Guest> pair in seatingService.guestsByTable)
             {
                 if (pair.Value != guest) continue;
                 targetTable = pair.Key;
@@ -142,28 +110,8 @@ namespace PandaCafe.Managers
 
             if (targetTable != null)
             {
-                ClearTable(targetTable);
+                seatingService.ClearTable(targetTable);
             }
-        }
-
-        private void HandleWaiterArrived()
-        {
-            if (pendingOrderTable == null) return;
-
-            if (!TryGetGuestAtTable(pendingOrderTable, out Guest guest) || guest.State != GuestState.WaitingForOrder)
-            {
-                pendingOrderTable = null;
-                return;
-            }
-
-            MenuItemSO orderedItem = menuData != null ? menuData.GetRandomMenuItem() : null;
-            if (orderedItem != null && orderManager != null)
-            {
-                orderManager.RegisterOrder(guest, pendingOrderTable, orderedItem);
-            }
-
-            guest.SetState(GuestState.WaitingForFood);
-            pendingOrderTable = null;
         }
     }
 }
