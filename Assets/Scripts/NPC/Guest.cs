@@ -29,7 +29,8 @@ namespace PandaCafe.NPC
 
         public event Action<Guest> PatienceExpired;
         public event Action<Guest, int> MealCompleted;
-        public event Action<Guest> StateChanged;
+        public event Action<GuestState, GuestState> StateChanged;
+        public event Action<Guest> GuestRemoved;
 
         private void Awake()
         {
@@ -124,8 +125,8 @@ namespace PandaCafe.NPC
 
         public void SetState(GuestState guestState)
         {
+            StateChanged?.Invoke(this.guestState, guestState);
             this.guestState = guestState;
-            StateChanged?.Invoke(this);
             
             SetStateTimer();
         }
@@ -193,6 +194,7 @@ namespace PandaCafe.NPC
             }
             else if (guestState == GuestState.GoingToExit)
             {
+                GuestRemoved?.Invoke(this);
                 Destroy(gameObject);
             } 
         }
