@@ -29,6 +29,7 @@ namespace PandaCafe.NPC
 
         public event Action<Guest> PatienceExpired;
         public event Action<Guest, int> MealCompleted;
+        public event Action<Guest> StateChanged;
 
         private void Awake()
         {
@@ -124,7 +125,13 @@ namespace PandaCafe.NPC
         public void SetState(GuestState guestState)
         {
             this.guestState = guestState;
+            StateChanged?.Invoke(this);
+            
+            SetStateTimer();
+        }
 
+        private void SetStateTimer()
+        {
             switch (guestState)
             {
                 case GuestState.WaitingInQueue:
