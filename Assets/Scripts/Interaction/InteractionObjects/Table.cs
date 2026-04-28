@@ -14,10 +14,14 @@ namespace PandaCafe.Interaction
 
         public Guest CurrentGuest { get; private set; }
         public bool IsTaken => isTaken;
+        public bool HasPendingPayout => PendingPayout > 0;
+        public int PendingPayout => pendingDishRevenue + pendingTips;
 
         public InteractionType Type {get; private set;}
 
         private bool isTaken = false;
+        private int pendingDishRevenue;
+        private int pendingTips;
 
         // Initializes table type and sets correct render order
         void Awake() 
@@ -32,7 +36,7 @@ namespace PandaCafe.Interaction
             if(actor == InteractionActor.Guest) 
             { 
                 // Prevent guest if table is occupied
-                if(isTaken) 
+                if(isTaken || HasPendingPayout)
                 { 
                     point = default;
                     return false;
@@ -64,6 +68,27 @@ namespace PandaCafe.Interaction
         {
             isTaken = true;
             CurrentGuest = guest;
+        }
+
+        public void AddDishRevenue(int amount)
+        {
+            if (amount <= 0) return;
+            pendingDishRevenue += amount;
+        }
+
+        public void AddTips(int amount)
+        {
+            if (amount <= 0) return;
+            pendingTips += amount;
+        }
+
+        public int CollectPendingPayout()
+        {
+            int payout = PendingPayout;
+            pendingDishRevenue = 0;
+            pendingTips = 0;
+
+            return payout;
         }
     }
 }

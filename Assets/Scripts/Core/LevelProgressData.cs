@@ -22,10 +22,7 @@ namespace PandaCafe.Core
 
         public void AddCoins(int amount)
         {
-            if (amount <= 0)
-            {
-                return;
-            }
+            if (amount <= 0) return;
 
             CoinsEarned += amount;
         }

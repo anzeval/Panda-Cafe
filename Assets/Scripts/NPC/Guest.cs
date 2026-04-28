@@ -28,6 +28,7 @@ namespace PandaCafe.NPC
         private Transform quitPoint;
 
         public event Action<Guest> PatienceExpired;
+        public event Action<Guest, int> MealCompleted;
 
         private void Awake()
         {
@@ -78,14 +79,16 @@ namespace PandaCafe.NPC
                 case GuestState.WaitingInQueue : 
                 case GuestState.WaitingForOrder : 
                 case GuestState.WaitingForFood : 
-                case GuestState.Eating : 
                     if (TickTimer())
                         HandlePatienceExpired();
-                        
                     break;
                 case GuestState.ReadingMenu : 
                     if (TickTimer())
                         SetState(GuestState.WaitingForOrder);
+                    break;
+                case GuestState.Eating :
+                    if (TickTimer())
+                    HandleMealCompleted();
                     break;
             }
         }
@@ -101,6 +104,17 @@ namespace PandaCafe.NPC
             PatienceExpired?.Invoke(this);
             SetState(GuestState.GoingToExit);
         }
+
+        private void HandleMealCompleted()
+        {
+            int minTips = Mathf.RoundToInt(Mathf.Min(guestSO.MinTips, guestSO.MaxTips));
+            int maxTips = Mathf.RoundToInt(Mathf.Max(guestSO.MinTips, guestSO.MaxTips));
+            int tips = UnityEngine.Random.Range(minTips, maxTips + 1);
+
+            MealCompleted?.Invoke(this, Mathf.Max(0, tips));
+            SetState(GuestState.GoingToExit);
+        }
+        
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)
         {
             point = transform.position;
@@ -132,11 +146,9 @@ namespace PandaCafe.NPC
 
                 case GuestState.Eating:
                     stateTimer = guestSO.EatingTime;
-                    Debug.Log("eating");
                     break;
                 case GuestState.GoingToExit:
                     MoveTo(quitPoint.position);
-                    Debug.Log("quit");
                     break;
             }
         }

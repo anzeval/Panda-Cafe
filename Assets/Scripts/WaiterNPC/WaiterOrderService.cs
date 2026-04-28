@@ -1,6 +1,7 @@
 using PandaCafe.Interaction;
 using PandaCafe.Menu;
 using PandaCafe.NPC;
+using PandaCafe.Core;
 using PandaCafe.HallManagment;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace PandaCafe.WaiterNPC
         private Waiter waiter;
         private Table pendingOrderTable;
         private Table pendingDeliveryTable;
+        private Table pendingPaymentTable;
         private OrderItem carriedOrder;
         private GameObject carriedDish;
         private readonly Dictionary<Guest, MenuItemSO> orderedItemsByGuest = new Dictionary<Guest, MenuItemSO>();
@@ -75,6 +77,9 @@ namespace PandaCafe.WaiterNPC
                 case WaiterTask.DiscardingDish:
                     HandleDiscardingDish();
                     break;
+                case WaiterTask.CollectingPayment:
+                    HandleCollectingPayment();
+                    break;
             }
 
             currentTask = WaiterTask.None;
@@ -83,6 +88,12 @@ namespace PandaCafe.WaiterNPC
         private WaiterTask TryPrepareTableTask(Table table)
         {
             if (table == null) return WaiterTask.None;
+
+            if (table.HasPendingPayout)
+            {
+                pendingPaymentTable = table;
+                return WaiterTask.CollectingPayment;
+            }
 
             if (CanDeliverToTable(table))
             {
@@ -98,6 +109,7 @@ namespace PandaCafe.WaiterNPC
 
             pendingOrderTable = null;
             pendingDeliveryTable = null;
+            pendingPaymentTable = null;
             return WaiterTask.None;
         }
 
@@ -156,6 +168,7 @@ namespace PandaCafe.WaiterNPC
             if (!CanDeliverToTable(pendingDeliveryTable)) return;
 
             seatedGuest.SetState(GuestState.Eating);
+            pendingDeliveryTable.AddDishRevenue(carriedOrder.MenuItemSO.Price * carriedOrder.Quantity);
             orderedItemsByGuest.Remove(seatedGuest);
 
             if (carriedDish != null)
@@ -166,6 +179,19 @@ namespace PandaCafe.WaiterNPC
 
             pendingDeliveryTable = null;
             carriedOrder = null;
+        }
+
+        private void HandleCollectingPayment()
+        {
+            if (pendingPaymentTable == null) return;
+
+            int payout = pendingPaymentTable.CollectPendingPayout();
+            if (payout > 0)
+            {
+                GameManager.Instance?.AddCoinsForCurrentLevel(payout);
+            }
+
+            pendingPaymentTable = null;
         }
 
         private void HandleDiscardingDish()

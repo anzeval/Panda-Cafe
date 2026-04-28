@@ -17,6 +17,6 @@ MonoBehaviour:
   ReadingMenuTime: 0
   WaitingOrderTime: 12
   WaitingFoodTime: 12
-  EatingTime: 5
+  EatingTime: 10
   MinTips: 3
   MaxTips: 15
