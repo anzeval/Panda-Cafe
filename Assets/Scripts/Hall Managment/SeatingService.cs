@@ -4,11 +4,16 @@ using PandaCafe.NPC;
 
 namespace PandaCafe.HallManagment
 {
+    // Manages guest-table relationships
     public class SeatingService
     {
+        // Table -> Guest
         private readonly Dictionary<Table, Guest> guestsByTable = new Dictionary<Table, Guest>();
+
+        // Guest -> Table
         private readonly Dictionary<Guest, Table> tablesByGuest = new Dictionary<Guest, Table>();
 
+        // Get guest at table
         public bool TryGetGuestAtTable(Table table, out Guest guest)
         {
             guest = null;
@@ -20,6 +25,7 @@ namespace PandaCafe.HallManagment
             return guest != null;
         }
 
+        // Get table by guest
         public bool TryGetTableByGuest(Guest guest, out Table table)
         {
             table = null;
@@ -31,20 +37,25 @@ namespace PandaCafe.HallManagment
             return table != null;
         }
 
+        // Assign guest to table
         public bool SeatGuestAtTable(Guest guest, Table table)
         {
             if (guest == null || table == null) return false;
 
             table.OccupyTable(guest);
+
             guestsByTable[table] = guest;
             tablesByGuest[guest] = table;
+
             return true;
         }
 
+        // Clear table and remove mappings
         public void ClearTable(Table table)
         {
             if (table == null) return;
 
+            // Remove guest reference
             if (guestsByTable.TryGetValue(table, out Guest guest) && guest != null)
             {
                 tablesByGuest.Remove(guest);

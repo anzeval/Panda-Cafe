@@ -9,7 +9,7 @@ namespace PandaCafe.NPC
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
 
-        // Number in the queue if =-1 => out of queue
+        // Queue position, -1 means not in queue
         public int OrdinalQueueNumber {get; private set;}
 
         public InteractionType Type {get; private set;}
@@ -27,6 +27,7 @@ namespace PandaCafe.NPC
         private float stateTimer;
         private Transform quitPoint;
 
+        // Events for external systems
         public event Action<Guest> PatienceExpired;
         public event Action<Guest, int> MealCompleted;
         public event Action<GuestState, GuestState> StateChanged;
@@ -36,6 +37,7 @@ namespace PandaCafe.NPC
         {
             Type = InteractionType.Guest;
 
+            // Ensure movement component exists
             if (movement == null)
             {
                 movement = GetComponent<NPCMovement>();
@@ -47,9 +49,12 @@ namespace PandaCafe.NPC
             }
 
             movement = GetComponent<NPCMovement>();
+
+            // Subscribe to movement event
             movement.destinationReached += OnDestinationReached;
         }
 
+        // Initialize data
         public void Init(GuestSO _guestSO, Transform _quitPoint)
         {
             guestSO = _guestSO;
@@ -61,6 +66,7 @@ namespace PandaCafe.NPC
             HandleState();
         }
 
+        // Update sprite sorting by Y position
         private void LateUpdate()
         {
             spriteRenderer.sortingOrder = -(int)(transform.position.y * 100) + 20;
@@ -68,12 +74,14 @@ namespace PandaCafe.NPC
 
         private void OnDestroy()
         {
+            // Unsubscribe from movement event
             if (movement != null)
             {
                 movement.destinationReached -= OnDestinationReached;
             }
         }
 
+        // Main state logic
         private void HandleState()
         {
             switch (guestState)
@@ -84,29 +92,34 @@ namespace PandaCafe.NPC
                     if (TickTimer())
                         HandlePatienceExpired();
                     break;
+
                 case GuestState.ReadingMenu : 
                     if (TickTimer())
                         SetState(GuestState.WaitingForOrder);
                     break;
+
                 case GuestState.Eating :
                     if (TickTimer())
-                    HandleMealCompleted();
+                        HandleMealCompleted();
                     break;
             }
         }
 
-         private bool TickTimer()
+        // Update timer and check if finished
+        private bool TickTimer()
         {
             stateTimer -= Time.deltaTime;
             return stateTimer <= 0f;
         }
 
+        // Trigger patience expiration
         private void HandlePatienceExpired()
         {
             PatienceExpired?.Invoke(this);
             SetState(GuestState.GoingToExit);
         }
 
+        // Trigger meal completion and calculate tips
         private void HandleMealCompleted()
         {
             int minTips = Mathf.RoundToInt(Mathf.Min(guestSO.MinTips, guestSO.MaxTips));
@@ -117,12 +130,14 @@ namespace PandaCafe.NPC
             SetState(GuestState.GoingToExit);
         }
         
+        // Return interaction point
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point)
         {
             point = transform.position;
             return true;
         }
 
+        // Change state and notify listeners
         public void SetState(GuestState guestState)
         {
             StateChanged?.Invoke(this.guestState, guestState);
@@ -131,6 +146,7 @@ namespace PandaCafe.NPC
             SetStateTimer();
         }
 
+        // Setup timer or actions for new state
         private void SetStateTimer()
         {
             switch (guestState)
@@ -145,7 +161,6 @@ namespace PandaCafe.NPC
 
                 case GuestState.WaitingForOrder:
                     stateTimer = guestSO.WaitingOrderTime;
-                    Debug.Log("wait for order");
                     break;
 
                 case GuestState.WaitingForFood:
@@ -155,18 +170,21 @@ namespace PandaCafe.NPC
                 case GuestState.Eating:
                     stateTimer = guestSO.EatingTime;
                     break;
+
                 case GuestState.GoingToExit:
                     MoveTo(quitPoint.position);
                     break;
             }
         }
 
+        // Move to position
         public bool MoveTo(Vector3 target) 
         {
             hasPendingTableTarget = false;
             return movement.SetTarget(target);
         }
 
+        // Move to table with validation
         public bool MoveToTable(Vector3 tableTarget)
         {
             hasPendingTableTarget = true;
@@ -174,11 +192,13 @@ namespace PandaCafe.NPC
             return movement.SetTarget(tableTarget);
         }
 
+        // Set queue index
         public void SetOrdinalQueueNumber(int index)
         {
             OrdinalQueueNumber = index;
         }
 
+        // Handle movement completion
         private void OnDestinationReached()
         {
             if (guestState == GuestState.GoingToQueue)
@@ -187,6 +207,7 @@ namespace PandaCafe.NPC
             }
             else if (guestState == GuestState.GoingToTable)
             {
+                // Ensure correct table position reached
                 if (hasPendingTableTarget && Vector2.Distance(transform.position, pendingTableTarget) > tableArrivalTolerance) return;
 
                 hasPendingTableTarget = false;
@@ -194,6 +215,7 @@ namespace PandaCafe.NPC
             }
             else if (guestState == GuestState.GoingToExit)
             {
+                // Notify removal and destroy object
                 GuestRemoved?.Invoke(this);
                 Destroy(gameObject);
             } 

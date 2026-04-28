@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace PandaCafe.Interaction
 {
-    // Represents a table with interaction points for guest and waiter.
-    // Manages table occupancy and provides positions for interactions.
+    // Table with guest and waiter interaction
     public class Table : MonoBehaviour, IInteractable
     {
         [SerializeField] private Transform guestPosition; 
@@ -12,31 +11,41 @@ namespace PandaCafe.Interaction
 
         [SerializeField] SpriteRenderer spriteRenderer;
 
+        // Current seated guest
         public Guest CurrentGuest { get; private set; }
+
+        // Table occupied state
         public bool IsTaken => isTaken;
+
+        // Has money to collect
         public bool HasPendingPayout => PendingPayout > 0;
+
+        // Total pending money
         public int PendingPayout => pendingDishRevenue + pendingTips;
 
         public InteractionType Type {get; private set;}
 
         private bool isTaken = false;
+
+        // Accumulated revenue
         private int pendingDishRevenue;
         private int pendingTips;
 
-        // Initializes table type and sets correct render order
         void Awake() 
         { 
-            Type = InteractionType.Table; 
+            Type = InteractionType.Table;
+
+            // Set render order
             spriteRenderer.sortingOrder = -(int)(transform.position.y * 100);
         } 
 
-        // Returns interaction point based on actor (guest/waiter)
+        // Return interaction point by actor
         public bool TryGetWorldPoint(InteractionActor actor, out Vector3 point) 
         { 
-            if(actor == InteractionActor.Guest) 
+            if (actor == InteractionActor.Guest) 
             { 
-                // Prevent guest if table is occupied
-                if(isTaken || HasPendingPayout)
+                // Block if occupied or not cleared
+                if (isTaken || HasPendingPayout)
                 { 
                     point = default;
                     return false;
@@ -46,7 +55,7 @@ namespace PandaCafe.Interaction
                 return true; 
             } 
             
-            if(actor == InteractionActor.Waiter) 
+            if (actor == InteractionActor.Waiter) 
             { 
                 point = waiterPosition.position; 
                 return true; 
@@ -56,35 +65,39 @@ namespace PandaCafe.Interaction
             return false; 
         }
 
-        // Marks table as free
+        // Free table
         public void FreeTable()
         {
             isTaken = false;
             CurrentGuest = null;
         }
 
-        // Marks table as occupied
+        // Assign guest
         public void OccupyTable(Guest guest)
         {
             isTaken = true;
             CurrentGuest = guest;
         }
 
+        // Add dish income
         public void AddDishRevenue(int amount)
         {
             if (amount <= 0) return;
             pendingDishRevenue += amount;
         }
 
+        // Add tips
         public void AddTips(int amount)
         {
             if (amount <= 0) return;
             pendingTips += amount;
         }
 
+        // Collect all money
         public int CollectPendingPayout()
         {
             int payout = PendingPayout;
+
             pendingDishRevenue = 0;
             pendingTips = 0;
 

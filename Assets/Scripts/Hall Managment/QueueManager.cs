@@ -3,7 +3,7 @@ using PandaCafe.NPC;
 
 namespace PandaCafe.HallManagment
 {
-    // Manages a queue of guests: stores their order, controls capacity, and assigns world positions where each guest should stand
+    // Manages guest queue
     public class QueueManager : MonoBehaviour
     {
         [SerializeField] Transform startPoint;
@@ -18,73 +18,71 @@ namespace PandaCafe.HallManagment
             guestsQueue = new Guest[queueCapacity];
         }
 
-        // Adds a guest to the first available slot in the queue
-        // Assigns their queue index (ordinalQueueNumber) and moves them to the correct position using MoveTo
+        // Add guest to first free slot
         public void AddGuest(Guest guest)
         {
-            if(guestsQueue == null || guest == null) return;
+            if (guestsQueue == null || guest == null) return;
 
             for (int i = 0; i < guestsQueue.Length; i++)
             {
-                if(guestsQueue[i] == null)
+                if (guestsQueue[i] == null)
                 {
                     guestsQueue[i] = guest;
+
+                    // Subscribe to patience event
                     guest.PatienceExpired += OnGuestPatienceExpired;
+
                     guest.SetOrdinalQueueNumber(i);
                     guest.MoveTo(GetQueueWorldPosition(i));
-
                     break;
                 }
             }
         }
 
-        // Calculates the world position for a guest based on their index in the queue
-        // Each next guest stands further from the startPoint by a fixed distance, with a small random Y offset
+        // Calculate position for queue slot
         private Vector3 GetQueueWorldPosition(int index)
         {
             float x = startPoint.position.x - distance * index;
-            float y = startPoint.position.y  + (float)rdm.NextDouble();
+            float y = startPoint.position.y + (float)rdm.NextDouble();
 
             return new Vector3(x, y, startPoint.position.z);
         }
 
-        // Checks if there is any free space in the queue
-        // Returns true if at least one slot is empty
+        // Check if queue has free slot
         public bool HasSlot()
         {
-            if(guestsQueue == null) return false;
+            if (guestsQueue == null) return false;
 
             for (int i = 0; i < guestsQueue.Length; i++)
             {
-                if(guestsQueue[i] == null) return true;
+                if (guestsQueue[i] == null) return true;
             }
 
             return false;
         }
 
-        // Returns the guest at the specified index in the queue.
-        // Used to access information about a specific guest.
+        // Get guest by index
         public Guest GetGuest(int index)
         {
-            if(guestsQueue != null && guestsQueue.Length > 0) return guestsQueue[index];
+            if (guestsQueue != null && guestsQueue.Length > 0) return guestsQueue[index];
             return null;
         }
 
-        // Removes a guest from the queue by index.
-        // Resets their queue number and frees the slot.
+        // Remove guest by index
         public void RemoveGuestFromQueue(int index)
         {
             if (guestsQueue == null || index < 0 || index >= guestsQueue.Length) return;
             if (guestsQueue[index] == null) return;
 
+            // Unsubscribe from event
             guestsQueue[index].PatienceExpired -= OnGuestPatienceExpired;
 
             guestsQueue[index].SetOrdinalQueueNumber(-1);
             guestsQueue[index] = null;
-
         }
 
-         public void RemoveGuestFromQueue(Guest guest)
+        // Remove guest by reference
+        public void RemoveGuestFromQueue(Guest guest)
         {
             if (guestsQueue == null || guest == null) return;
 
@@ -97,25 +95,25 @@ namespace PandaCafe.HallManagment
             }
         }
 
-        // Reorganizes the queue after a guest is removed.
-        // Shifts all guests forward to fill empty slots, updates their indices, and moves them to new positions.
+        // Shift queue forward after removal
         public void ReorderQueue()
         {
             if (guestsQueue == null) return;
 
             for (int i = 0; i < guestsQueue.Length; i++)
             {
-                if(guestsQueue[i] == null)
+                if (guestsQueue[i] == null)
                 {
                     for (int j = i; j < guestsQueue.Length; j++)
                     {
-                        if(guestsQueue[j] == null) continue;
+                        if (guestsQueue[j] == null) continue;
 
                         guestsQueue[i] = guestsQueue[j];
                         guestsQueue[i].SetOrdinalQueueNumber(i);
 
                         guestsQueue[j] = null;
 
+                        // Move guest to new position
                         guestsQueue[i].MoveTo(GetQueueWorldPosition(i));
                         break;
                     }
@@ -123,7 +121,8 @@ namespace PandaCafe.HallManagment
             }
         }
 
-         private void OnGuestPatienceExpired(Guest guest)
+        // Handle guest leaving due to no patience
+        private void OnGuestPatienceExpired(Guest guest)
         {
             if (guest == null || guest.OrdinalQueueNumber < 0) return;
 
@@ -132,4 +131,3 @@ namespace PandaCafe.HallManagment
         }
     }
 }
-
