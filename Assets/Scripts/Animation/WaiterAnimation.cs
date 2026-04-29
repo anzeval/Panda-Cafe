@@ -1,16 +1,43 @@
 using UnityEngine;
 
-public class WaiterAnimation : MonoBehaviour
+namespace PandaCafe.WaiterNPC
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class WaiterAnimation : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private Animator animator;
+        [SerializeField] private Waiter waiter;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void OnEnable()
+        {
+            waiter.StateChanged += HandleStateChange;
+        }
+
+        private void Start()
+        {
+            HandleStateChange();
+        }
+
+        void OnDisable()
+        {
+            waiter.StateChanged -= HandleStateChange;
+        }
+
+        private void HandleStateChange()
+        {
+            switch (waiter.State)
+            {
+                case WaiterState.Idle:
+                    animator.SetTrigger("Idle");
+                    break;
+
+                case WaiterState.Walking:
+                    animator.SetTrigger("Walking");
+                    break;
+
+                case WaiterState.Carrying:
+                    animator.SetTrigger("Carrying");
+                    break;
+            }
+        }
     }
 }

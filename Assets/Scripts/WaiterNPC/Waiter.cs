@@ -17,6 +17,10 @@ namespace PandaCafe.WaiterNPC
         // Notify when destination reached
         public event Action ArrivedAtDestination;
 
+        public WaiterState State {get; private set;}
+
+        public event Action StateChanged;
+
         private void Awake()
         {
             // Ensure movement component
@@ -32,6 +36,12 @@ namespace PandaCafe.WaiterNPC
 
             // Subscribe to movement event
             movement.destinationReached += OnDestinationReached;
+        }
+
+        public void SetState(WaiterState waiterState)
+        {
+            State = waiterState;
+            StateChanged?.Invoke();
         }
 
         // Update sprite sorting
