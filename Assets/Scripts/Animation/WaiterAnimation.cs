@@ -34,7 +34,7 @@ namespace PandaCafe.WaiterNPC
                     animator.SetTrigger("Walking");
                     break;
 
-                case WaiterState.Carrying:
+                case WaiterState.Caring:
                     animator.SetTrigger("Carrying");
                     break;
             }

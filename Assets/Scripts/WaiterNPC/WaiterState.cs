@@ -4,6 +4,6 @@ namespace PandaCafe.WaiterNPC
     {
         Idle,
         Walking,
-        Carrying
+        Caring
     }
 }

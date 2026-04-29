@@ -23,6 +23,8 @@ namespace PandaCafe.WaiterNPC
 
         private void Awake()
         {
+            State = WaiterState.Idle;
+
             // Ensure movement component
             if (movement == null)
             {
@@ -42,6 +44,16 @@ namespace PandaCafe.WaiterNPC
         {
             State = waiterState;
             StateChanged?.Invoke();
+        }
+
+        public void UpdateMovementState(bool hasDishInHands)
+        {
+            SetState(hasDishInHands ? WaiterState.Caring : WaiterState.Walking);
+        }
+
+        public void SetIdleState()
+        {
+            SetState(WaiterState.Idle);
         }
 
         // Update sprite sorting

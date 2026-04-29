@@ -53,6 +53,8 @@ namespace PandaCafe.WaiterNPC
             if (!component.TryGetWorldPoint(InteractionActor.Waiter, out Vector3 point)) return;
             if (!waiter.MoveTo(point)) return;
 
+            waiter.UpdateMovementState(carriedDish != null);
+
             // Determine task
             switch (component)
             {
@@ -101,6 +103,7 @@ namespace PandaCafe.WaiterNPC
             }
 
             currentTask = WaiterTask.None;
+            waiter?.SetIdleState();
         }
 
         // Decide table task
@@ -186,6 +189,7 @@ namespace PandaCafe.WaiterNPC
             if (carriedDish != null && waiter != null)
             {
                 waiter.PlaceDishInHands(carriedDish.transform);
+                waiter.SetState(WaiterState.Caring);
             }
         }
 
