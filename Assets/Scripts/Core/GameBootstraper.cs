@@ -32,7 +32,6 @@ namespace PandaCafe.Core
         [SerializeField] Waiter waiter;
         [SerializeField] Kitchen kitchen;
 
-        private AnimationAdapter animationAdapter;
         private PathfindingManager pathfindingManager;
 
         void Awake()
@@ -50,8 +49,6 @@ namespace PandaCafe.Core
             kitchen.Init(orderManager);
 
             npcSpawner.RunSpawner();
-
-            animationAdapter = new AnimationAdapter(npcSpawner);
         }
     }   
 }

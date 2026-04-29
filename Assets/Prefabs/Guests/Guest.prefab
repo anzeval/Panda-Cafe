@@ -10,10 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7075674784098870619}
   - component: {fileID: 1686078037058574961}
-  - component: {fileID: 8635368751151813052}
   - component: {fileID: -8912976770684091402}
   - component: {fileID: 2255097076761107059}
   - component: {fileID: -6468736126911188393}
+  - component: {fileID: 8635368751151813052}
+  - component: {fileID: 8804448799429932811}
+  - component: {fileID: 7192689044537516366}
   m_Layer: 0
   m_Name: Guest
   m_TagString: Untagged
@@ -96,20 +98,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &8635368751151813052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4569326773202911153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa1f89935d2f4323889b0caeeadc5fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.NPC.Guest
-  spriteRenderer: {fileID: 1686078037058574961}
-  quitPoint: {fileID: 1883585684101621698}
 --- !u!50 &-8912976770684091402
 Rigidbody2D:
   serializedVersion: 5
@@ -188,6 +176,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.AI.NPCMovement
   speed: 5
   stopDistance: 0.05
+--- !u!114 &8635368751151813052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569326773202911153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa1f89935d2f4323889b0caeeadc5fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.NPC.Guest
+  spriteRenderer: {fileID: 1686078037058574961}
+--- !u!95 &8804448799429932811
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569326773202911153}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5fdfcb19772b24c57be22d2a1d65130f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7192689044537516366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569326773202911153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa07bc8af4d54d4fa22657e1bf51879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PandaCafe.Animation.GuestAnimation
+  animator: {fileID: 8804448799429932811}
+  guest: {fileID: 8635368751151813052}
 --- !u!1 &5673135961857823451
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,8 +16,6 @@ namespace PandaCafe.NPC
         private GuestData guestData;
         private QueueManager queueManager;
 
-        public event Action<Guest> GuestAdded;
-
         // Initializes the spawner with required dependencies
         public void Init(GuestData guestData, QueueManager queueManager)
         {
@@ -57,7 +55,6 @@ namespace PandaCafe.NPC
 
             // Register the guest
             queueManager.AddGuest(guest);
-            GuestAdded?.Invoke(guest);
 
             // Set initial state
             guest.SetState(GuestState.GoingToQueue);
