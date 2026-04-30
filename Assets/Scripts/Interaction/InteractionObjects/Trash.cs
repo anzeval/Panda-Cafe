@@ -1,4 +1,6 @@
+using PandaCafe.Animation;
 using UnityEngine;
+using System;
 
 namespace PandaCafe.Interaction
 {
@@ -8,11 +10,28 @@ namespace PandaCafe.Interaction
         // Position for waiter interaction
         [SerializeField] private Transform waiterPosition;
 
+        public TrashState State {get; private set;}
         public InteractionType Type {get; private set;}
+
+        public event Action StateChanged;
 
         void Awake()
         {
             Type = InteractionType.Trash;
+            SetState(TrashState.Closed);
+        }
+
+        public void SetOpened(bool opened)
+        {
+            SetState(opened ? TrashState.Opening : TrashState.Closing);
+        }
+
+        public void SetState(TrashState newState)
+        {
+            if (State == newState) return;
+
+            State = newState;
+            StateChanged?.Invoke();
         }
 
         // Return interaction point for waiter

@@ -31,6 +31,7 @@ namespace PandaCafe.WaiterNPC
         private readonly Dictionary<Guest, MenuItemSO> orderedItemsByGuest = new Dictionary<Guest, MenuItemSO>();
 
         private WaiterTask currentTask;
+         private Trash openedTrash;
 
         public WaiterOrderService(MenuData menuData, OrderManager orderManager, SeatingService seatingService, Kitchen kitchen)
         {
@@ -47,6 +48,7 @@ namespace PandaCafe.WaiterNPC
             if (currentTask != WaiterTask.None) return;
 
             this.waiter = waiter;
+            UpdateTrashState(component);
 
             // Validate interaction
             if (!HallInteractionRouter.CanInteract(InteractionActor.Waiter, component.Type)) return;
@@ -73,6 +75,21 @@ namespace PandaCafe.WaiterNPC
                 default:
                     currentTask = WaiterTask.None;
                     break; 
+            }
+        }
+
+        private void UpdateTrashState(IInteractable component)
+        {
+            if (openedTrash != null && !ReferenceEquals(openedTrash, component))
+            {
+                openedTrash.SetOpened(false);
+                openedTrash = null;
+            }
+
+            if (component is Trash trash)
+            {
+                trash.SetOpened(true);
+                openedTrash = trash;
             }
         }
 
