@@ -10,6 +10,8 @@ namespace PandaCafe.Interaction
         [SerializeField] private Transform waiterPosition; 
 
         [SerializeField] SpriteRenderer spriteRenderer;
+        [SerializeField] private Coin coinPrefab;
+        [SerializeField] private Transform coinSpawnPoint;
 
         // Current seated guest
         public Guest CurrentGuest { get; private set; }
@@ -30,6 +32,8 @@ namespace PandaCafe.Interaction
         // Accumulated revenue
         private int pendingDishRevenue;
         private int pendingTips;
+
+        private Coin activeCoin;
 
         void Awake() 
         { 
@@ -84,6 +88,7 @@ namespace PandaCafe.Interaction
         {
             if (amount <= 0) return;
             pendingDishRevenue += amount;
+            EnsureCoinVisible();
         }
 
         // Add tips
@@ -91,6 +96,7 @@ namespace PandaCafe.Interaction
         {
             if (amount <= 0) return;
             pendingTips += amount;
+            EnsureCoinVisible();
         }
 
         // Collect all money
@@ -101,7 +107,21 @@ namespace PandaCafe.Interaction
             pendingDishRevenue = 0;
             pendingTips = 0;
 
+            if (activeCoin != null)
+            {
+                activeCoin.Collect();
+                activeCoin = null;
+            }
+
             return payout;
+        }
+
+        private void EnsureCoinVisible()
+        {
+            if (activeCoin != null || coinPrefab == null) return;
+
+            Transform spawnPoint = coinSpawnPoint != null ? coinSpawnPoint : transform;
+            activeCoin = Instantiate(coinPrefab, spawnPoint.position, Quaternion.identity, transform);
         }
     }
 }

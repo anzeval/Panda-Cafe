@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class CoinAnimation : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Animator animator;
+    [SerializeField] private string floatingStateName = "Floating";
+
+    private void Awake()
     {
         
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        if (animator == null) return;
+
+        animator.Play(floatingStateName, 0, 0f);
     }
 }
