@@ -16,13 +16,15 @@ Serve guests, prepare cute desserts and drinks, earn coins, unlock levels, and u
 
 ## ✨ Overview
 
-**Panda Café** is a charming 2D café game where the player manages service flow across tables, the kitchen, guests, money, and shop upgrades. The game is designed around short level-based sessions: complete goals, keep guests happy, collect rewards, and use your earnings to unlock new items and improve the café.
+**Panda Café** is a charming 2D café management game where the player manages service flow across tables, the kitchen, guests, money, and shop upgrades.
+
+The game is designed around short level-based sessions: complete goals, keep guests happy, collect rewards, and use your earnings to unlock new items and improve the café.
+
+Beyond gameplay features, the project focuses heavily on scalable gameplay architecture, modular system design, and maintainable Unity development practices.
 
 ---
 
 ## 🎮 Gameplay Preview
-
-> Place your GIFs in `docs/media/` and keep the suggested file names below, or update the image paths to match your files.
 
 <div align="center">
 
@@ -55,15 +57,33 @@ Serve guests, prepare cute desserts and drinks, earn coins, unlock levels, and u
 
 ---
 
-## 🌟 Features
+# 🌟 Features
 
 - **Level-based café sessions** with goals for coins, served guests, and guest losses.
 - **Guest service loop** with tables, kitchen interactions, food orders, and coins.
 - **Progress tracking** for completed levels and earned stars.
 - **Level map flow** with locked and unlocked levels.
 - **Shop upgrades** for café items and gameplay improvements.
-- **Clean Unity architecture** using managers, ScriptableObjects, prefabs, and separated gameplay systems.
+- **Reusable gameplay systems** built with modular architecture principles.
+- **State-driven NPC logic** for guest flow and waiter interactions.
+- **Event-driven communication** between gameplay systems and UI.
+- **ScriptableObject-based configuration** for scalable content management.
 - **Cozy 2D presentation** with animated guests, waiter, trash, food, and UI elements.
+
+---
+
+# 🧠 Architecture & Technical Design
+
+The project was built with strong focus on maintainable code structure and scalable gameplay systems.
+
+Instead of tightly coupling gameplay logic into single scripts, the architecture separates responsibilities into independent managers and reusable systems.
+
+Main architectural goals:
+- Low coupling between systems
+- Clear gameplay flow organization
+- Reusable gameplay components
+- Easier scalability and debugging
+- Production-oriented Unity structure
 
 ---
 
@@ -80,7 +100,39 @@ Serve guests, prepare cute desserts and drinks, earn coins, unlock levels, and u
 
 ---
 
-## 🗂️ Project Structure
+# 🤖 NPC & Gameplay Logic
+
+Guests and waiter behaviors are built around custom gameplay state logic.
+
+NPC systems manage:
+- Queue flow
+- Table seating
+- Food ordering
+- Waiting timers
+- Eating states
+- Order delivery
+- Leaving behavior
+
+This approach keeps gameplay behavior modular and easier to extend with additional mechanics in the future.
+
+---
+
+# ⚡ Event-Driven Systems
+
+Several gameplay systems communicate through event-driven architecture instead of direct hard references.
+
+Examples include:
+- UI reacting to gameplay events
+- Currency updates
+- Order completion
+- Level progress tracking
+- Guest state transitions
+
+This reduced dependencies between systems and improved maintainability.
+
+---
+
+# 🗂️ Project Structure
 
 ```text
 Panda-Cafe/
@@ -99,25 +151,44 @@ Panda-Cafe/
 
 ---
 
-## 🛠️ Built With
+# 🛠️ Built With
 
 - **Unity 6000.4.0f1**
 - **C#**
 - **Universal Render Pipeline (URP)**
 - **Unity Input System**
 - **TextMesh Pro / Unity UI**
-- **ScriptableObjects** for levels, guests, food, and shop upgrades
+- **ScriptableObjects**
+- **Object-Oriented Programming (OOP)**
+- **Event-Driven Architecture**
+- **State-Based NPC Logic**
+- **Prefab-Based Workflow**
+- **Coroutine-Based Gameplay Systems**
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Development Focus
 
-### Requirements
+This project was created as a portfolio project with emphasis on improving practical skills in:
+
+- Gameplay architecture
+- Scalable Unity systems
+- Maintainable code organization
+- AI behavior logic
+- Modular gameplay design
+- Decoupled system communication
+- Production-style project structure
+
+---
+
+# 🚀 Getting Started
+
+## Requirements
 
 - Unity **6000.4.0f1** or a compatible Unity 6 version
 - Git
 
-### Run Locally
+## Run Locally
 
 1. Clone the repository:
 
@@ -132,24 +203,7 @@ Panda-Cafe/
 
 ---
 
-## 🖼️ Adding Your GIFs
-
-Add your GIF files to `docs/media/` using these names:
-
-| GIF | Suggested file name |
-| --- | --- |
-| Gameplay | `gameplay.gif` |
-| Day completed | `day-completed.gif` |
-| You failed | `you-failed.gif` |
-| Shop item purchased | `shop-item-purchased.gif` |
-| Locked shop item | `locked-shop-item.gif` |
-| Locked levels | `locked-levels.gif` |
-
-If your files have different names, update the image paths in this README.
-
----
-
-## 📌 Current Scenes
+# 📌 Current Scenes
 
 - `MainMenu`
 - `LevelMap`
@@ -158,9 +212,9 @@ If your files have different names, update the image paths in this README.
 
 ---
 
-## 🧡 Credits
+# 🧡 Credits
 
-Created with care as a cozy café management project.
+Created with care as a cozy café management project focused on gameplay systems, architecture, and scalable Unity development practices.
 
 ---
 
