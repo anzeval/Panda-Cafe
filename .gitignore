@@ -1,0 +1,156 @@
+# Auto-generated
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity cache
+Library/
+Library/**
+Temp/
+Obj/
+
+# macOS
+.AppleDouble
+.LSOverride
+
+
+# =========================
+# Unity generated folders
+# =========================
+
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+MemoryCaptures/
+UserSettings/
+
+# =========================
+# Unity cache
+# =========================
+
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# =========================
+# Visual Studio / VS Code
+# =========================
+
+.vscode/
+.idea/
+.gradle/
+
+# Visual Studio cache
+.vs/
+
+# =========================
+# OS generated files
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# Unity auto-generated meta backup
+# =========================
+
+*.bak
+
+# =========================
+# Crash reports
+# =========================
+
+sysinfo.txt
+
+# =========================
+# Addressables
+# =========================
+
+Assets/AddressableAssetsData/*/*.bin*
+
+# =========================
+# Recordings
+# =========================
+
+Recordings/
+
+# =========================
+# Rider
+# =========================
+
+.idea/
+
+# =========================
+# Unity Collaborate
+# =========================
+
+.collabignore
+
+# =========================
+# Android / iOS builds
+# =========================
+
+*.apk
+*.aab
+*.unitypackage
+*.ipa
+
+# =========================
+# Streaming generated files
+# =========================
+
+Assets/StreamingAssets/aa.meta
+Assets/StreamingAssets/aa/
+
+# =========================
+# DOTS
+# =========================
+
+EntityBinaryBackup*
+
+# =========================
+# Blender / temporary
+# =========================
+
+*.blend1
+*.blend2
+
+# =========================
+# JetBrains Rider plugin
+# =========================
+
+Assets/Plugins/Editor/JetBrains*
+
+# =========================
+# Large generated artifacts
+# =========================
+
+*.tmp.*
+*.cache
+*.log
+
+# =========================
+# Ignore build artifacts
+# =========================
+
+ExportedObj/
+ExportedProject/
+
+# =========================
+# Ignore package lock if needed
+# =========================
+# Packages/packages-lock.json
